@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Qatar Pulse v2.0 — Live Situational Awareness</title>
+<title>Qatar Pulse v3.02 — Live Situational Awareness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 <style>
   :root {
     /* ── Pantone 222 C — Official Qatar Maroon ── */
@@ -464,12 +465,114 @@
 
   /* ── FOOTER ── */
   footer { border-top:1px solid var(--border); background:var(--bg2); padding:20px 24px; }
-  .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-  .footer-sig { font-size:12px; color:var(--text3); }
-  .footer-sig strong { color:var(--maroon); font-weight:700; }
+  .footer-inner { max-width:1100px; margin:0 auto; }
+  .footer-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+  .footer-brand { display:flex; align-items:center; gap:10px; }
+  .footer-brand-name { font-size:14px; font-weight:700; color:var(--text); }
+  .footer-brand-name span { color:var(--maroon); }
+  .footer-brand-handle { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+  .footer-socials { display:flex; align-items:center; gap:8px; }
+  .footer-social-link {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 10px; border-radius:20px; font-size:11px; font-weight:600;
+    border:1px solid var(--border2); color:var(--text2); text-decoration:none;
+    transition:all 0.15s; background:var(--bg);
+  }
+  .footer-social-link:hover { border-color:var(--maroon); color:var(--maroon); background:var(--maroon-light); }
+  .footer-bottom { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding-top:12px; border-top:1px solid var(--border); }
+  .footer-sig { font-size:11px; color:var(--text3); }
   .footer-sig a { color:var(--text3); text-decoration:none; border-bottom:1px solid var(--border2); }
   .footer-sig a:hover { color:var(--maroon); }
-  .footer-version { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+  .footer-version { font-size:10px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+
+  /* ── SETTINGS ── */
+  .settings-section-wrap { max-width:1100px; margin:0 auto; padding:28px 24px 80px; }
+  .settings-block { background:var(--bg2); border:1px solid var(--border); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+  .settings-block-head { padding:14px 18px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text3); display:flex; align-items:center; gap:8px; }
+  .settings-block-body { padding:18px; }
+  .lang-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .lang-btn {
+    padding:14px 10px; border-radius:10px; border:2px solid var(--border);
+    background:var(--bg); cursor:pointer; text-align:center;
+    font-family:'Syne',sans-serif; font-size:12px; font-weight:600;
+    color:var(--text2); transition:all 0.15s;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .lang-btn:hover { border-color:var(--border2); color:var(--text); }
+  .lang-btn.active { border-color:var(--maroon); background:var(--maroon-light); color:var(--maroon); }
+  .lang-flag { font-size:24px; }
+  .lang-native { font-size:13px; font-weight:700; }
+  .lang-english { font-size:10px; color:var(--text3); }
+
+  .legal-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .legal-link {
+    display:flex; align-items:center; gap:10px;
+    padding:12px 14px; background:var(--bg); border:1px solid var(--border);
+    border-radius:10px; text-decoration:none; color:var(--text);
+    font-size:13px; font-weight:500; transition:all 0.15s; cursor:pointer;
+  }
+  .legal-link:hover { border-color:var(--border2); color:var(--maroon); }
+  .legal-icon { font-size:18px; }
+
+  .privacy-policy { padding:0; }
+  .pp-section { padding:14px 0; border-bottom:1px solid var(--border); }
+  .pp-section:last-child { border-bottom:none; }
+  .pp-section-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--maroon); margin-bottom:8px; }
+  .pp-section-body { font-size:13px; color:var(--text2); line-height:1.7; }
+  .pp-section-body a { color:var(--maroon); }
+
+  .settings-meta { font-size:11px; color:var(--text3); margin-top:16px; font-family:'JetBrains Mono',monospace; }
+
+  /* ══════════════════════════════════
+     RTL OVERRIDES (Arabic)
+  ══════════════════════════════════ */
+  [dir="rtl"] .header-inner { flex-direction: row-reverse; }
+  [dir="rtl"] nav { flex-direction: row-reverse; }
+  [dir="rtl"] .logo { flex-direction: row-reverse; }
+  [dir="rtl"] .status-inner { direction: rtl; }
+  [dir="rtl"] .status-label::before { display: none; }
+  [dir="rtl"] .status-label::after { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  [dir="rtl"] .threat-bar { flex-direction: row-reverse; }
+  [dir="rtl"] .threat-bar-label { flex-direction: row-reverse; text-align: right; }
+  [dir="rtl"] .threat-level.active::after { display: none; }
+  [dir="rtl"] .status-meta { flex-direction: row-reverse; }
+  [dir="rtl"] .tab-bar { flex-direction: row-reverse; }
+  [dir="rtl"] .news-item { direction: rtl; }
+  [dir="rtl"] .news-source { flex-direction: row-reverse; }
+  [dir="rtl"] .ai-summary-header { flex-direction: row-reverse; }
+  [dir="rtl"] .ai-badge { flex-direction: row-reverse; }
+  [dir="rtl"] .ai-sources { flex-direction: row-reverse; text-align: right; }
+  [dir="rtl"] .widget-head { flex-direction: row-reverse; }
+  [dir="rtl"] .weather-main { flex-direction: row-reverse; }
+  [dir="rtl"] .ac-top { flex-direction: row-reverse; }
+  [dir="rtl"] .prayer-row { flex-direction: row-reverse; }
+  [dir="rtl"] .service-row { flex-direction: row-reverse; }
+  [dir="rtl"] .service-name { flex-direction: row-reverse; }
+  [dir="rtl"] .reliability-item { flex-direction: row-reverse; }
+  [dir="rtl"] .footer-top { flex-direction: row-reverse; }
+  [dir="rtl"] .footer-brand { flex-direction: row-reverse; }
+  [dir="rtl"] .footer-bottom { flex-direction: row-reverse; }
+  [dir="rtl"] .footer-socials { flex-direction: row-reverse; }
+  [dir="rtl"] .movement-card { direction: rtl; text-align: right; }
+  [dir="rtl"] .movement-title { flex-direction: row-reverse; }
+  [dir="rtl"] .traffic-signal-box { flex-direction: row-reverse; }
+  [dir="rtl"] .border-dirs { direction: rtl; }
+  [dir="rtl"] .border-tips-box { direction: rtl; text-align: right; }
+  [dir="rtl"] .border-tip::before { content: '←'; }
+  [dir="rtl"] .settings-section-wrap { direction: rtl; }
+  [dir="rtl"] .settings-block-head { flex-direction: row-reverse; }
+  [dir="rtl"] .lang-grid { direction: rtl; }
+  [dir="rtl"] .legal-grid { direction: rtl; }
+  [dir="rtl"] .geo-item { flex-direction: row-reverse; }
+  [dir="rtl"] .geo-content { text-align: right; }
+  [dir="rtl"] .ticker-track { animation-direction: reverse; }
+  [dir="rtl"] .score-box { direction: rtl; text-align: right; }
+  [dir="rtl"] main { direction: rtl; }
+  [dir="rtl"] .section-title { flex-direction: row-reverse; }
+  [dir="rtl"] .section-title::after { display: none; }
+  [dir="rtl"] .section-title::before { content: ''; flex: 1; height: 1px; background: var(--border); min-width: 20px; }
+  [dir="rtl"] .dua-band { flex-direction: row-reverse; }
+  [dir="rtl"] body { font-family: 'Noto Naskh Arabic', 'Syne', sans-serif; }
 
   /* ── ANIMATIONS ── */
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
@@ -537,15 +640,16 @@
     <a class="logo" href="#">
       <div class="logo-flag"><div class="m"></div><div class="w"></div></div>
       <div class="logo-text">Qatar <span>Pulse</span></div>
-      <span class="version-pill">v2.0</span>
+      <span class="version-pill">v3.02</span>
     </a>
     <nav>
-      <a href="#" class="active" onclick="showSection('status',this);return false">Status</a>
-      <a href="#" onclick="showSection('aviation',this);return false">Aviation</a>
-      <a href="#" onclick="showSection('movement',this);return false">Movement</a>
-      <a href="#" onclick="showSection('schools',this);return false">Schools</a>
-      <a href="#" onclick="showSection('embassies',this);return false">Embassies</a>
-      <a href="#" onclick="showSection('sources',this);return false">Sources</a>
+      <a href="#" class="active" onclick="showSection('status',this);return false" data-i18n="nav_status">Status</a>
+      <a href="#" onclick="showSection('aviation',this);return false" data-i18n="nav_aviation">Aviation</a>
+      <a href="#" onclick="showSection('movement',this);return false" data-i18n="nav_movement">Movement</a>
+      <a href="#" onclick="showSection('education',this);return false" data-i18n="nav_education">Education</a>
+      <a href="#" onclick="showSection('embassies',this);return false" data-i18n="nav_embassies">Embassies</a>
+      <a href="#" onclick="showSection('sources',this);return false" data-i18n="nav_sources">Sources</a>
+      <a href="#" onclick="showSection('settings',this);return false" data-i18n="nav_settings">Settings</a>
     </nav>
     <div class="header-right">
       <div class="clock"><div class="clock-dot"></div><span id="live-clock">--:-- AST</span></div>
@@ -574,45 +678,45 @@
 <div class="status-band">
   <div class="status-inner">
     <div>
-      <div class="status-label">Situational Awareness · Doha, Qatar</div>
-      <h1 class="status-headline" id="status-headline">Calm · Caution Advised</h1>
-      <p class="status-sub">Qatar remains stable with normal daily operations. Standard conditions across infrastructure, aviation, and essential services. Regional monitoring elevated. No active government security alerts. Diplomatic activity continues as expected.</p>
+      <div class="status-label" data-i18n="status_label">Situational Awareness · Doha, Qatar</div>
+      <h1 class="status-headline" id="status-headline" data-i18n="status_headline">Calm · Caution Advised</h1>
+      <p class="status-sub" data-i18n="status_sub">Qatar remains stable with normal daily operations. Standard conditions across infrastructure, aviation, and essential services. Regional monitoring elevated. No active government security alerts. Diplomatic activity continues as expected.</p>
 
       <!-- 5-LEVEL BAR -->
       <div class="threat-bar-wrap">
         <div class="threat-bar-label">
-          <span>Situational Awareness Level</span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;opacity:0.6">Based on: regional security · diplomatic posture · infrastructure · media signals</span>
+          <span data-i18n="threat_bar_label">Situational Awareness Level</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;opacity:0.6" data-i18n="threat_factors">Based on: regional security · diplomatic posture · infrastructure · media signals</span>
         </div>
         <div class="threat-bar">
           <div class="threat-level tl-1" id="lvl-1">
             <div class="threat-num">01</div>
-            <div class="threat-name">Secure</div>
+            <div class="threat-name" data-i18n="lvl_secure">Secure</div>
           </div>
           <div class="threat-level tl-2" id="lvl-2">
             <div class="threat-num">02</div>
-            <div class="threat-name">Calm</div>
+            <div class="threat-name" data-i18n="lvl_calm">Calm</div>
           </div>
           <div class="threat-level tl-3 active" id="lvl-3">
             <div class="threat-num">03</div>
-            <div class="threat-name">Caution Advised</div>
+            <div class="threat-name" data-i18n="lvl_caution">Caution Advised</div>
           </div>
           <div class="threat-level tl-4" id="lvl-4">
             <div class="threat-num">04</div>
-            <div class="threat-name">Elevated</div>
+            <div class="threat-name" data-i18n="lvl_elevated">Elevated</div>
           </div>
           <div class="threat-level tl-5" id="lvl-5">
             <div class="threat-num">05</div>
-            <div class="threat-name">Critical</div>
+            <div class="threat-name" data-i18n="lvl_critical">Critical</div>
           </div>
         </div>
       </div>
 
       <div class="status-meta">
-        <span class="signal-badge">Live Feed</span>
-        <span class="pill green">✓ HIA Operational</span>
-        <span class="pill green">✓ Metro Running</span>
-        <span class="pill yellow">⚠ Schools: Dist. Learning until 26 Mar</span>
+        <span class="signal-badge" data-i18n="live_feed">Live Feed</span>
+        <span class="pill green" data-i18n="pill_hia">✓ HIA Operational</span>
+        <span class="pill green" data-i18n="pill_metro">✓ Metro Running</span>
+        <span class="pill yellow" data-i18n="pill_schools">⚠ Education: Dist. Learning until 26 Mar</span>
         <span class="pill" id="last-updated" style="font-family:'JetBrains Mono',monospace;font-size:10px">Updated —</span>
       </div>
     </div>
@@ -647,13 +751,13 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
           </svg>
-          AI Situation Summary
+          <span data-i18n="ai_badge">AI Situation Summary</span>
         </div>
         <div class="thinking-dots"><span></span><span></span><span></span></div>
       </div>
-      <div id="ai-text">Analysing feeds from QNA, IMO, GCO, MOFA, Al Jazeera, The Peninsula, Gulf Times, and official government portals…</div>
+      <div id="ai-text" data-i18n-init="ai_loading">Analysing feeds from QNA, IMO, GCO, MOFA, Al Jazeera, The Peninsula, Gulf Times, and official government portals…</div>
       <div class="ai-sources">
-        Sources:
+        <span data-i18n="ai_sources_label">Sources:</span>
         <a href="https://www.qna.org.qa" target="_blank">QNA</a> ·
         <a href="https://imo.gov.qa" target="_blank">IMO</a> ·
         <a href="https://www.gco.gov.qa/en/" target="_blank">GCO</a> ·
@@ -668,9 +772,9 @@
 
     <!-- TABS -->
     <div class="tab-bar fade-in-delay">
-      <button class="tab active" onclick="switchTab('news',this)">Latest News</button>
-      <button class="tab" onclick="switchTab('regional',this)">Regional Signals</button>
-      <button class="tab" onclick="switchTab('geo',this)">Geopolitical</button>
+      <button class="tab active" onclick="switchTab('news',this)" data-i18n="tab_news">Latest News</button>
+      <button class="tab" onclick="switchTab('regional',this)" data-i18n="tab_regional">Regional Signals</button>
+      <button class="tab" onclick="switchTab('geo',this)" data-i18n="tab_geo">Geopolitical</button>
     </div>
     <div class="tab-panel active" id="tab-news"><div id="news-feed"></div></div>
     <div class="tab-panel" id="tab-regional"><div id="regional-feed"></div></div>
@@ -680,73 +784,73 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="widget fade-in">
-      <div class="widget-head">Weather — Doha <span style="font-family:'JetBrains Mono',monospace;font-size:10px" id="weather-time">—</span></div>
+      <div class="widget-head"><span data-i18n="widget_weather">Weather — Doha</span> <span style="font-family:'JetBrains Mono',monospace;font-size:10px" id="weather-time">—</span></div>
       <div class="weather-widget">
         <div class="weather-main">
           <div class="weather-temp">27°</div>
           <div class="weather-info">
-            <div class="weather-desc">Patchy Rain · 83%</div>
-            <div class="weather-loc">Doha, Qatar · AST (UTC+3)</div>
+            <div class="weather-desc" data-i18n="w_desc">Patchy Rain · 83%</div>
+            <div class="weather-loc" data-i18n="w_loc">Doha, Qatar · AST (UTC+3)</div>
           </div>
         </div>
         <div class="weather-grid">
-          <div class="weather-stat"><div class="weather-stat-label">Humidity</div><div class="weather-stat-val">65%</div></div>
-          <div class="weather-stat"><div class="weather-stat-label">Wind</div><div class="weather-stat-val">32 km/h</div></div>
-          <div class="weather-stat"><div class="weather-stat-label">Visibility</div><div class="weather-stat-val">8 km</div></div>
-          <div class="weather-stat"><div class="weather-stat-label">Feels</div><div class="weather-stat-val">29°</div></div>
+          <div class="weather-stat"><div class="weather-stat-label" data-i18n="w_humidity">Humidity</div><div class="weather-stat-val">65%</div></div>
+          <div class="weather-stat"><div class="weather-stat-label" data-i18n="w_wind">Wind</div><div class="weather-stat-val">32 km/h</div></div>
+          <div class="weather-stat"><div class="weather-stat-label" data-i18n="w_visibility">Visibility</div><div class="weather-stat-val">8 km</div></div>
+          <div class="weather-stat"><div class="weather-stat-label" data-i18n="w_feels">Feels</div><div class="weather-stat-val">29°</div></div>
         </div>
       </div>
     </div>
 
     <div class="widget fade-in-delay">
-      <div class="widget-head">Aviation <span id="av-check" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">—</span></div>
+      <div class="widget-head"><span data-i18n="widget_aviation">Aviation</span> <span id="av-check" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">—</span></div>
       <div class="airports-grid" style="padding:12px;gap:8px">
         <div class="airport-card green">
-          <div class="ac-top"><div class="ac-code">HIA</div><div class="ac-status green">Operational</div></div>
-          <div class="ac-name">Hamad Intl Airport</div>
-          <div class="ac-detail">All terminals normal. No disruptions.</div>
+          <div class="ac-top"><div class="ac-code">HIA</div><div class="ac-status green" data-i18n="av_operational">Operational</div></div>
+          <div class="ac-name" data-i18n="av_hia_name">Hamad Intl Airport</div>
+          <div class="ac-detail" data-i18n="av_hia_detail">All terminals normal. No disruptions.</div>
           <div class="ac-time" id="hia-check">—</div>
         </div>
         <div class="airport-card verify">
-          <div class="ac-top"><div class="ac-code">QR</div><div class="ac-status green">Normal</div></div>
-          <div class="ac-name">Qatar Airways</div>
-          <div class="ac-detail">No alerts. Global routes operating normally.</div>
+          <div class="ac-top"><div class="ac-code">QR</div><div class="ac-status green" data-i18n="av_normal">Normal</div></div>
+          <div class="ac-name" data-i18n="av_qr_name">Qatar Airways</div>
+          <div class="ac-detail" data-i18n="av_qr_detail">No alerts. Global routes operating normally.</div>
           <div class="ac-time" id="doh-check">—</div>
         </div>
       </div>
       <div style="padding:4px 12px 12px">
-        <a href="https://www.qatarairways.com/en/travel-alerts.html" target="_blank" style="display:block;text-align:center;padding:9px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);text-decoration:none;border:1px solid var(--border);transition:all 0.15s;margin-bottom:6px" onmouseover="this.style.borderColor='var(--maroon)';this.style.color='var(--maroon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">→ QR Travel Alerts</a>
-        <a href="https://hamadairport.com/en/flights" target="_blank" style="display:block;text-align:center;padding:9px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);text-decoration:none;border:1px solid var(--border);transition:all 0.15s" onmouseover="this.style.borderColor='var(--maroon)';this.style.color='var(--maroon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">→ Live Flights at HIA</a>
+        <a href="https://www.qatarairways.com/en/travel-alerts.html" target="_blank" data-i18n="av_travel_alerts" style="display:block;text-align:center;padding:9px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);text-decoration:none;border:1px solid var(--border);transition:all 0.15s;margin-bottom:6px" onmouseover="this.style.borderColor='var(--maroon)';this.style.color='var(--maroon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">→ QR Travel Alerts</a>
+        <a href="https://hamadairport.com/en/flights" target="_blank" data-i18n="av_live_flights" style="display:block;text-align:center;padding:9px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);text-decoration:none;border:1px solid var(--border);transition:all 0.15s" onmouseover="this.style.borderColor='var(--maroon)';this.style.color='var(--maroon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">→ Live Flights at HIA</a>
       </div>
     </div>
 
     <div class="widget fade-in-delay">
-      <div class="widget-head">Prayer Times — Doha</div>
+      <div class="widget-head" data-i18n="widget_prayer">Prayer Times — Doha</div>
       <div class="prayer-list" id="prayer-list"></div>
     </div>
 
     <div class="widget fade-in-delay2">
-      <div class="widget-head">Essential Services</div>
+      <div class="widget-head" data-i18n="widget_services">Essential Services</div>
       <div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🏥</div>Hamad Medical</div><div class="service-status ok">Normal</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🚇</div>Qatar Metro</div><div class="service-status ok">Running</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🚖</div>Karwa Taxis</div><div class="service-status ok">Available</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">⛽</div>Fuel Stations</div><div class="service-status ok">Normal</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🏦</div>QNB / Banks</div><div class="service-status ok">Operational</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🛒</div>Lulu / Carrefour</div><div class="service-status ok">Open</div></div>
-        <div class="service-row"><div class="service-name"><div class="service-icon">🔴</div>QRCS Emergency</div><div class="service-status ok">Standby</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🏥</div><span data-i18n="svc_medical">Hamad Medical</span></div><div class="service-status ok" data-i18n="svc_normal">Normal</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🚇</div><span data-i18n="svc_metro">Qatar Metro</span></div><div class="service-status ok" data-i18n="svc_running">Running</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🚖</div><span data-i18n="svc_taxi">Karwa Taxis</span></div><div class="service-status ok" data-i18n="svc_available">Available</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">⛽</div><span data-i18n="svc_fuel">Fuel Stations</span></div><div class="service-status ok" data-i18n="svc_normal">Normal</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🏦</div><span data-i18n="svc_banks">QNB / Banks</span></div><div class="service-status ok" data-i18n="svc_operational">Operational</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🛒</div>Lulu / Carrefour</div><div class="service-status ok" data-i18n="svc_open">Open</div></div>
+        <div class="service-row"><div class="service-name"><div class="service-icon">🔴</div><span data-i18n="svc_qrcs">QRCS Emergency</span></div><div class="service-status ok" data-i18n="svc_standby">Standby</div></div>
       </div>
     </div>
 
     <div class="widget fade-in-delay2">
-      <div class="widget-head">Data Integrity <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--maroon)">84/100</span></div>
+      <div class="widget-head"><span data-i18n="widget_reliability">Data Integrity</span> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--maroon)">84/100</span></div>
       <div class="reliability-grid">
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label">News</div><div class="rel-check" style="color:var(--green)">✓</div></div>
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label">Weather</div><div class="rel-check" style="color:var(--green)">✓</div></div>
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label">Aviation</div><div class="rel-check" style="color:var(--green)">✓</div></div>
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label">Prayer</div><div class="rel-check" style="color:var(--green)">✓</div></div>
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--yellow)"></div><div class="rel-label">Geo Intel</div><div class="rel-check" style="color:var(--yellow)">~</div></div>
-        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label">Schools</div><div class="rel-check" style="color:var(--green)">✓</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_news">News</div><div class="rel-check" style="color:var(--green)">✓</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_weather">Weather</div><div class="rel-check" style="color:var(--green)">✓</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_aviation">Aviation</div><div class="rel-check" style="color:var(--green)">✓</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_prayer">Prayer</div><div class="rel-check" style="color:var(--green)">✓</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--yellow)"></div><div class="rel-label" data-i18n="rel_geo">Geo Intel</div><div class="rel-check" style="color:var(--yellow)">~</div></div>
+        <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_education">Education</div><div class="rel-check" style="color:var(--green)">✓</div></div>
       </div>
     </div>
   </aside>
@@ -758,7 +862,7 @@
 <div id="aviation-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
     <div>
-      <div style="margin-bottom:14px"><div class="section-title">Airport & Airline Status</div></div>
+      <div style="margin-bottom:14px"><div class="section-title" data-i18n="sec_av_airports">Airport &amp; Airline Status</div></div>
       <div class="airport-card green" style="margin-bottom:12px;background:var(--bg2);border-radius:12px;padding:18px;border:1px solid var(--border)">
         <div class="ac-top"><div class="ac-code" style="font-size:28px">HIA</div><div class="ac-status green">Fully Operational</div></div>
         <div class="ac-name" style="font-size:15px;margin-bottom:6px">Hamad International Airport</div>
@@ -781,7 +885,7 @@
     </div>
 
     <div>
-      <div style="margin-bottom:14px"><div class="section-title">QR Key Routes — Quick Reference</div></div>
+      <div style="margin-bottom:14px"><div class="section-title" data-i18n="sec_routes_title">QR Key Routes — Quick Reference</div></div>
       <div style="margin-bottom:10px;font-size:12px;color:var(--text3)">Representative schedule from DOH (Doha). Verify live at <a href="https://www.qatarairways.com/en/rebooking-options.html#flightschedule" target="_blank" style="color:var(--maroon)">qatarairways.com</a></div>
       <div class="widget" style="border-radius:10px;overflow:hidden">
         <div class="widget-head" style="background:var(--maroon-light)">
@@ -791,10 +895,10 @@
           <table class="flight-table">
             <thead>
               <tr>
-                <th>From DOH →</th>
-                <th>Destination</th>
-                <th>Daily Freq.</th>
-                <th>Status</th>
+                <th data-i18n="tbl_from">From DOH →</th>
+                <th data-i18n="tbl_dest">Destination</th>
+                <th data-i18n="tbl_freq">Daily Freq.</th>
+                <th data-i18n="tbl_status">Status</th>
               </tr>
             </thead>
             <tbody id="flight-table-body">
@@ -817,12 +921,12 @@
 <div id="movement-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
     <div>
-      <div style="margin-bottom:14px"><div class="section-title">Ground Movement</div></div>
+      <div style="margin-bottom:14px"><div class="section-title" data-i18n="sec_ground">Ground Movement</div></div>
       <div class="movement-card"><div class="movement-title">🚇 Qatar Metro</div><div class="movement-status" style="color:var(--green)">All Lines Operational</div><div class="movement-note">Gold, Red, and Green lines running on schedule. No service disruptions.</div></div>
       <div class="movement-card"><div class="movement-title">🚖 Karwa Taxis</div><div class="movement-status" style="color:var(--green)">Available Citywide</div><div class="movement-note">Standard pick-up zones active. Uber and Careem also operational.</div></div>
       <div class="movement-card"><div class="movement-title">🛣️ Major Roads</div><div class="movement-status" style="color:var(--green)">No Restrictions</div><div class="movement-note">Corniche, Al Shamal Road, Expressways — no closures. Normal flow.</div></div>
       <div class="movement-card"><div class="movement-title">🚢 Doha Port</div><div class="movement-status" style="color:var(--green)">Normal Operations</div><div class="movement-note">Hamad Port and ferry services running normally.</div></div>
-      <div style="margin-top:20px;margin-bottom:14px"><div class="section-title">Work & Offices</div></div>
+      <div style="margin-top:20px;margin-bottom:14px"><div class="section-title" data-i18n="sec_work">Work &amp; Offices</div></div>
       <div class="movement-card"><div class="movement-title">🏢 Government Offices</div><div class="movement-status" style="color:var(--green)">Normal Hours</div><div class="movement-note">No ministry closures or schedule changes announced.</div></div>
       <div class="movement-card"><div class="movement-title">🏟️ Venues & Malls</div><div class="movement-status" style="color:var(--green)">Open</div><div class="movement-note">Villaggio, Mall of Qatar, Place Vendôme — standard operating hours.</div></div>
     </div>
@@ -835,23 +939,23 @@
           <div class="signal-light sig-green"></div>
         </div>
         <div class="signal-info">
-          <div class="signal-status-label" style="color:var(--yellow)">Moderate Flow</div>
+          <div class="signal-status-label" style="color:var(--yellow)" data-i18n="mv_moderate">Moderate Flow</div>
           <div class="signal-status-desc">Intermittent queues at Qatar-bound lanes. Traffic moving — allow extra time. Outbound to Saudi moving faster.</div>
         </div>
         <div class="signal-wait">
-          <div class="signal-wait-label">Est. Wait</div>
+          <div class="signal-wait-label" data-i18n="mv_est_wait">Est. Wait</div>
           <div class="signal-wait-time">45–60</div>
-          <div class="signal-wait-unit">minutes</div>
+          <div class="signal-wait-unit" data-i18n="mv_minutes">minutes</div>
         </div>
       </div>
       <div class="border-dirs">
         <div class="border-dir">
-          <div class="border-dir-label">→ Into Qatar</div>
+          <div class="border-dir-label" data-i18n="mv_into_qatar">→ Into Qatar</div>
           <div class="border-dir-status" style="color:var(--yellow)">Moderate</div>
           <div class="border-dir-note">Intermittent queues. Allow 45–60 min for full vehicle clearance.</div>
         </div>
         <div class="border-dir">
-          <div class="border-dir-label">← Into Saudi Arabia</div>
+          <div class="border-dir-label" data-i18n="mv_into_saudi">← Into Saudi Arabia</div>
           <div class="border-dir-status" style="color:var(--green)">Moving</div>
           <div class="border-dir-note">Outbound lanes faster. Est. 20–35 min.</div>
         </div>
@@ -877,9 +981,9 @@
 </div>
 
 <!-- ══════════════════════════
-     SCHOOLS SECTION
+     EDUCATION SECTION
 ══════════════════════════ -->
-<div id="schools-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
+<div id="education-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
   <div class="schools-alert">
     <div class="schools-alert-icon">🏫</div>
     <div class="schools-alert-content">
@@ -938,7 +1042,7 @@
      EMBASSIES SECTION
 ══════════════════════════ -->
 <div id="embassies-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
-  <div style="margin-bottom:16px"><div class="section-title">Emergency Embassy Contacts — Doha</div></div>
+  <div style="margin-bottom:16px"><div class="section-title" data-i18n="sec_embassies">Emergency Embassy Contacts — Doha</div></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px" id="embassy-grid"></div>
 </div>
 
@@ -946,20 +1050,142 @@
      SOURCES SECTION
 ══════════════════════════ -->
 <div id="sources-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
-  <div style="margin-bottom:16px"><div class="section-title">Active News &amp; Official Sources</div></div>
+  <div style="margin-bottom:16px"><div class="section-title" data-i18n="sec_sources">Active News &amp; Official Sources</div></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px" id="sources-grid"></div>
+</div>
+
+<!-- ══════════════════════════
+     SETTINGS SECTION
+══════════════════════════ -->
+<div id="settings-section" style="display:none">
+  <div class="settings-section-wrap">
+    <div style="margin-bottom:20px"><div class="section-title" data-i18n="settings_title">Settings · الإعدادات · सेटिंग्स</div></div>
+
+    <!-- Language -->
+    <div class="settings-block">
+      <div class="settings-block-head">🌐 <span data-i18n="lang_heading">Language / اللغة / भाषा</span></div>
+      <div class="settings-block-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px" data-i18n="lang_scope_note">Translates all navigation labels, status indicators, and UI elements. News and situational data remains in its original sourced language (English).</p>
+        <div class="lang-grid">
+          <button class="lang-btn active" id="lang-en" onclick="setLanguage('en')">
+            <span class="lang-flag">🇬🇧</span>
+            <span class="lang-native">English</span>
+            <span class="lang-english">English</span>
+          </button>
+          <button class="lang-btn" id="lang-ar" onclick="setLanguage('ar')">
+            <span class="lang-flag">🇶🇦</span>
+            <span class="lang-native" style="font-family:'Noto Naskh Arabic',serif">العربية</span>
+            <span class="lang-english">Arabic</span>
+          </button>
+          <button class="lang-btn" id="lang-hi" onclick="setLanguage('hi')">
+            <span class="lang-flag">🇮🇳</span>
+            <span class="lang-native">हिन्दी</span>
+            <span class="lang-english">Hindi</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legal & Support -->
+    <div class="settings-block">
+      <div class="settings-block-head">⚖️ <span data-i18n="legal_heading">Legal &amp; Support</span></div>
+      <div class="settings-block-body">
+        <div class="legal-grid">
+          <div class="legal-link" onclick="document.getElementById('privacy-policy-panel').style.display=document.getElementById('privacy-policy-panel').style.display==='none'?'block':'none'">
+            <span class="legal-icon">🔒</span>
+            <div>
+              <div style="font-weight:700;font-size:13px" data-i18n="pp_title">Privacy Policy</div>
+              <div style="font-size:11px;color:var(--text3)" data-i18n="pp_subtitle">How QPulse handles your data</div>
+            </div>
+            <span style="margin-left:auto;color:var(--text3);font-size:12px">↓</span>
+          </div>
+          <a href="mailto:seedat.muhammad@gmail.com" class="legal-link">
+            <span class="legal-icon">✉️</span>
+            <div>
+              <div style="font-weight:700;font-size:13px" data-i18n="contact_title">Contact</div>
+              <div style="font-size:11px;color:var(--text3)">seedat.muhammad@gmail.com</div>
+            </div>
+          </a>
+          <div class="legal-link" style="cursor:default">
+            <span class="legal-icon">⚠️</span>
+            <div>
+              <div style="font-weight:700;font-size:13px" data-i18n="disclaimer_title">Disclaimer</div>
+              <div style="font-size:11px;color:var(--text3)" data-i18n="disclaimer_body">Not affiliated with the Government of Qatar</div>
+            </div>
+          </div>
+          <div class="legal-link" style="cursor:default">
+            <span class="legal-icon">ℹ️</span>
+            <div>
+              <div style="font-weight:700;font-size:13px">QPulse v3.02</div>
+              <div style="font-size:11px;color:var(--text3)">by Muhammad Seedat · March 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Policy Panel -->
+        <div id="privacy-policy-panel" style="display:none;margin-top:16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-size:14px;font-weight:800;color:var(--maroon)">🔒 Privacy Policy — QPulse</div>
+            <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">Effective: 24 March 2026</div>
+          </div>
+          <div class="privacy-policy">
+            <div class="pp-section">
+              <div class="pp-section-title">1. Overview</div>
+              <div class="pp-section-body">QPulse is a single-page situational awareness dashboard built for residents and expats in Qatar. It aggregates publicly available information from official Qatari government sources, licensed media, and established international news outlets to support daily planning. QPulse is an independent personal project — it is not affiliated with, endorsed by, or operated by the Government of Qatar or any official body.</div>
+            </div>
+            <div class="pp-section">
+              <div class="pp-section-title">2. Data We Collect</div>
+              <div class="pp-section-body">QPulse does not collect, store, or process any personally identifiable information (PII). No login is required. No cookies are set by QPulse itself. Anonymous page-view analytics may be collected via Vercel Analytics to understand usage patterns — this data is aggregated and non-identifiable. Your IP address, location, or browsing history is never stored or shared by QPulse.</div>
+            </div>
+            <div class="pp-section">
+              <div class="pp-section-title">3. Data Sources</div>
+              <div class="pp-section-body">All situational content displayed on QPulse is drawn from publicly accessible sources including: Qatar News Agency (QNA), International Media Office (IMO), Government Communications Office (GCO), Ministry of Foreign Affairs (MOFA), Ministry of Education &amp; Higher Education (MOEHE), Hamad International Airport (HIA), Qatar Airways, and established regional and international news organisations. QPulse does not create, alter, or fabricate any official government communications.</div>
+            </div>
+            <div class="pp-section">
+              <div class="pp-section-title">4. How Data Is Used</div>
+              <div class="pp-section-body">The information presented on QPulse is for personal situational awareness and daily planning purposes only. It is not intended as legal, security, or emergency guidance. The AI Summary feature uses the Anthropic Claude API to generate plain-language summaries — no user data is sent to Anthropic; only publicly available situational context is submitted. This tool is designed to support daily planning — not to assess or comment on Qatar's security posture.</div>
+            </div>
+            <div class="pp-section">
+              <div class="pp-section-title">5. Data Sharing</div>
+              <div class="pp-section-body">QPulse does not sell, share, or transfer any user data to third parties. Third-party links (to news outlets, embassies, airlines, and government portals) are provided for convenience — once you navigate to those external sites, their own privacy policies apply. QPulse is not responsible for the privacy practices of external sites.</div>
+            </div>
+            <div class="pp-section" style="border-bottom:none">
+              <div class="pp-section-title">6. Contact</div>
+              <div class="pp-section-body">For questions, feedback, or requests related to this Privacy Policy or QPulse generally, please contact: <a href="mailto:seedat.muhammad@gmail.com">seedat.muhammad@gmail.com</a><br><br>Built by <strong>Muhammad Seedat</strong> · <a href="https://www.linkedin.com/in/seedatmuhammad" target="_blank">LinkedIn</a> · <a href="https://x.com/safricanbedouin" target="_blank">X @safricanbedouin</a> · <a href="https://www.instagram.com/southafricanbedouin" target="_blank">Instagram</a></div>
+            </div>
+          </div>
+          <div class="settings-meta">Last updated: 24 March 2026 · QPulse v3.02</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="settings-block">
+      <div class="settings-block-head">📡 <span>About QPulse</span></div>
+      <div class="settings-block-body">
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">QPulse aggregates official Qatar government sources, regional media, and international news in one place — so residents and expats in Doha can stay informed without hunting across 15 different tabs. Built out of a need to have everything in one trusted place during a period of heightened regional awareness.</p>
+        <p style="font-size:12px;color:var(--text3);line-height:1.7">Sources span QNA, IMO, GCO, MOFA, MOEHE, HIA, Qatar Airways, Marhaba Qatar, Al Jazeera, The Peninsula, Gulf Times, Qatar Tribune, Doha News, BBC Middle East, and Reuters Gulf.</p>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="https://www.linkedin.com/in/seedatmuhammad" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--maroon-light);border:1px solid var(--border2);border-radius:8px;font-size:12px;color:var(--maroon);text-decoration:none;font-weight:600">Follow on LinkedIn →</a>
+          <a href="https://x.com/safricanbedouin" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text2);text-decoration:none;font-weight:600">@safricanbedouin on X →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ══════════════════════════
      BOTTOM NAV
 ══════════════════════════ -->
-<div class="bottom-nav" id="bottom-nav">
-  <div class="bnav-item active" onclick="showSection('status',this)"><div class="bnav-icon">📡</div>Status</div>
-  <div class="bnav-item" onclick="showSection('aviation',this)"><div class="bnav-icon">✈️</div>Aviation</div>
-  <div class="bnav-item" onclick="showSection('movement',this)"><div class="bnav-icon">🚇</div>Movement</div>
-  <div class="bnav-item" onclick="showSection('schools',this)"><div class="bnav-icon">🏫</div>Schools</div>
-  <div class="bnav-item" onclick="showSection('embassies',this)"><div class="bnav-icon">🏛️</div>Embassy</div>
-  <div class="bnav-item" onclick="showSection('sources',this)"><div class="bnav-icon">📰</div>Sources</div>
+<div class="bottom-nav" id="bottom-nav" style="grid-template-columns:repeat(7,1fr)">
+  <div class="bnav-item active" onclick="showSection('status',this)"><div class="bnav-icon">📡</div><span data-i18n="nav_status">Status</span></div>
+  <div class="bnav-item" onclick="showSection('aviation',this)"><div class="bnav-icon">✈️</div><span data-i18n="nav_aviation">Aviation</span></div>
+  <div class="bnav-item" onclick="showSection('movement',this)"><div class="bnav-icon">🚇</div><span data-i18n="nav_movement">Movement</span></div>
+  <div class="bnav-item" onclick="showSection('education',this)"><div class="bnav-icon">🏫</div><span data-i18n="nav_education">Education</span></div>
+  <div class="bnav-item" onclick="showSection('embassies',this)"><div class="bnav-icon">🏛️</div><span data-i18n="nav_embassies">Embassy</span></div>
+  <div class="bnav-item" onclick="showSection('sources',this)"><div class="bnav-icon">📰</div><span data-i18n="nav_sources">Sources</span></div>
+  <div class="bnav-item" onclick="showSection('settings',this)"><div class="bnav-icon">⚙️</div><span data-i18n="nav_settings">Settings</span></div>
 </div>
 
 <!-- ══════════════════════════
@@ -967,18 +1193,45 @@
 ══════════════════════════ -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-sig">
-      Qatar Pulse · <strong>Built for the Beautiful People of Qatar</strong> ·
-      Sources: <a href="https://www.qna.org.qa" target="_blank">QNA</a> ·
-      <a href="https://imo.gov.qa" target="_blank">IMO</a> ·
-      <a href="https://www.gco.gov.qa/en/" target="_blank">GCO</a> ·
-      <a href="https://mofa.gov.qa/en" target="_blank">MOFA</a> ·
-      <a href="https://hamadairport.com" target="_blank">HIA</a> ·
-      <a href="https://thepeninsulaqatar.com" target="_blank">The Peninsula</a> ·
-      Not affiliated with the Government of Qatar
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-flag" style="width:22px;height:16px;border-radius:2px;overflow:hidden;display:flex;box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0">
+          <div style="background:var(--maroon);flex:1.6"></div>
+          <div style="background:var(--white-flag);flex:1;clip-path:polygon(0 0,100% 0,80% 16%,100% 32%,80% 48%,100% 64%,80% 80%,100% 96%,0 100%)"></div>
+        </div>
+        <div>
+          <div class="footer-brand-name"><span>Q</span>Pulse by Muhammad Seedat</div>
+          <div class="footer-brand-handle">@southafricanbedouin</div>
+        </div>
+      </div>
+      <div class="footer-socials">
+        <a href="https://www.linkedin.com/in/seedatmuhammad" target="_blank" class="footer-social-link">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://x.com/safricanbedouin" target="_blank" class="footer-social-link">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X
+        </a>
+        <a href="https://www.instagram.com/southafricanbedouin" target="_blank" class="footer-social-link">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </a>
+      </div>
     </div>
-    <div class="footer-version">
-      Built by <strong style="color:var(--maroon)">@southafricanbedouin</strong> · mseedat &nbsp;·&nbsp; v2.0
+    <div class="footer-bottom">
+      <div class="footer-sig">
+        Built for the Beautiful People of Qatar ·
+        Sources: <a href="https://www.qna.org.qa" target="_blank">QNA</a> ·
+        <a href="https://imo.gov.qa" target="_blank">IMO</a> ·
+        <a href="https://www.gco.gov.qa/en/" target="_blank">GCO</a> ·
+        <a href="https://mofa.gov.qa/en" target="_blank">MOFA</a> ·
+        <a href="https://hamadairport.com" target="_blank">HIA</a> ·
+        <a href="https://thepeninsulaqatar.com" target="_blank">The Peninsula</a> ·
+        Not affiliated with the Government of Qatar ·
+        This tool is designed to support daily planning — not to assess or comment on Qatar's security posture.
+      </div>
+      <div class="footer-version">v3.02 · QPulse by mseedat</div>
     </div>
   </div>
 </footer>
@@ -1125,11 +1378,14 @@ function renderPrayers() {
     const [h,m] = p.time.split(':').map(Number);
     if(h*60+m > currentMins) { nextPrayer = p.name; break; }
   }
-  document.getElementById('prayer-list').innerHTML = PRAYER_TIMES.map(p => `
-    <div class="prayer-row ${p.name===nextPrayer?'next':''}">
-      <div class="prayer-name ${p.name===nextPrayer?'next':''}">${p.name}${p.name===nextPrayer?' ← next':''}</div>
+  document.getElementById('prayer-list').innerHTML = PRAYER_TIMES.map(p => {
+    const pname = T('prayer_'+p.name.toLowerCase());
+    const isNext = p.name === nextPrayer;
+    return `<div class="prayer-row ${isNext?'next':''}">
+      <div class="prayer-name ${isNext?'next':''}">${pname}${isNext?' <span style="font-size:10px;opacity:0.7">'+T('prayer_next')+'</span>':''}</div>
       <div class="prayer-time">${p.time}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderEmbassies() {
@@ -1173,7 +1429,7 @@ function renderFlightTable() {
 // NAVIGATION
 // ════════════════════════════════════
 
-const ALL_SECTIONS = ['status-main','aviation-section','movement-section','schools-section','embassies-section','sources-section'];
+const ALL_SECTIONS = ['status-main','aviation-section','movement-section','education-section','embassies-section','sources-section','settings-section'];
 
 function showSection(name, trigger) {
   ALL_SECTIONS.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
@@ -1183,6 +1439,227 @@ function showSection(name, trigger) {
   document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(a=>a.classList.remove('active'));
   if(trigger) trigger.classList.add('active');
+}
+
+// ════════════════════════════════════
+// I18N — FULL TRANSLATION ENGINE
+// ════════════════════════════════════
+
+const TRANSLATIONS = {
+  en: {
+    // Navigation
+    nav_status:'Status', nav_aviation:'Aviation', nav_movement:'Movement',
+    nav_education:'Education', nav_embassies:'Embassies', nav_sources:'Sources', nav_settings:'Settings',
+    // Status band
+    status_label:'Situational Awareness · Doha, Qatar',
+    status_headline:'Calm · Caution Advised',
+    status_sub:'Qatar remains stable with normal daily operations. Standard conditions across infrastructure, aviation, and essential services. Regional monitoring elevated. No active government security alerts. Diplomatic activity continues as expected.',
+    threat_bar_label:'Situational Awareness Level',
+    threat_factors:'Based on: regional security · diplomatic posture · infrastructure · media signals',
+    lvl_secure:'Secure', lvl_calm:'Calm', lvl_caution:'Caution Advised', lvl_elevated:'Elevated', lvl_critical:'Critical',
+    live_feed:'Live Feed',
+    pill_hia:'✓ HIA Operational', pill_metro:'✓ Metro Running', pill_schools:'⚠ Education: Dist. Learning until 26 Mar',
+    score_label:'Data Integrity',
+    // AI Summary
+    ai_badge:'AI Situation Summary',
+    ai_loading:'Analysing feeds from QNA, IMO, GCO, MOFA, Al Jazeera, The Peninsula, Gulf Times, and official government portals…',
+    ai_sources_label:'Sources:',
+    // Tabs
+    tab_news:'Latest News', tab_regional:'Regional Signals', tab_geo:'Geopolitical',
+    // Weather
+    widget_weather:'Weather — Doha', w_desc:'Patchy Rain · 83%', w_loc:'Doha, Qatar · AST (UTC+3)',
+    w_humidity:'Humidity', w_wind:'Wind', w_visibility:'Visibility', w_feels:'Feels',
+    // Aviation sidebar
+    widget_aviation:'Aviation',
+    av_operational:'Operational', av_hia_name:'Hamad Intl Airport', av_hia_detail:'All terminals normal. No disruptions.',
+    av_normal:'Normal', av_qr_name:'Qatar Airways', av_qr_detail:'No alerts. Global routes operating normally.',
+    av_travel_alerts:'→ QR Travel Alerts', av_live_flights:'→ Live Flights at HIA',
+    // Prayer
+    widget_prayer:'Prayer Times — Doha',
+    prayer_fajr:'Fajr', prayer_sunrise:'Sunrise', prayer_dhuhr:'Dhuhr', prayer_asr:'Asr', prayer_maghrib:'Maghrib', prayer_isha:'Isha',
+    prayer_next:'← next',
+    // Services
+    widget_services:'Essential Services',
+    svc_medical:'Hamad Medical', svc_metro:'Qatar Metro', svc_taxi:'Karwa Taxis', svc_fuel:'Fuel Stations', svc_banks:'QNB / Banks', svc_qrcs:'QRCS Emergency',
+    svc_normal:'Normal', svc_running:'Running', svc_available:'Available', svc_operational:'Operational', svc_open:'Open', svc_standby:'Standby',
+    // Reliability
+    widget_reliability:'Data Integrity',
+    rel_news:'News', rel_weather:'Weather', rel_aviation:'Aviation', rel_prayer:'Prayer', rel_geo:'Geo Intel', rel_education:'Education',
+    // Aviation section
+    sec_av_airports:'Airport & Airline Status', sec_routes_title:'QR Key Routes — Quick Reference',
+    tbl_from:'From DOH →', tbl_dest:'Destination', tbl_freq:'Daily Freq.', tbl_status:'Status',
+    // Movement section
+    sec_ground:'Ground Movement', sec_work:'Work & Offices',
+    mv_moderate:'Moderate Flow', mv_est_wait:'Est. Wait', mv_minutes:'minutes',
+    mv_into_qatar:'→ Into Qatar', mv_into_saudi:'← Into Saudi Arabia',
+    // Section titles
+    sec_embassies:'Emergency Embassy Contacts — Doha',
+    sec_sources:'Active News & Official Sources',
+    // Settings
+    settings_title:'Settings',
+    lang_heading:'Interface Language', lang_scope_note:'Translates all navigation labels, status indicators, and UI elements. News and situational data remains in its original sourced language (English).',
+    legal_heading:'Legal & Support',
+    pp_title:'Privacy Policy', pp_subtitle:'How QPulse handles your data',
+    contact_title:'Contact', disclaimer_title:'Disclaimer', disclaimer_body:'Not affiliated with the Government of Qatar',
+  },
+
+  ar: {
+    // Navigation
+    nav_status:'الحالة', nav_aviation:'الطيران', nav_movement:'التنقل',
+    nav_education:'التعليم', nav_embassies:'السفارات', nav_sources:'المصادر', nav_settings:'الإعدادات',
+    // Status band
+    status_label:'الوعي الظرفي · الدوحة، قطر',
+    status_headline:'هادئ · يُنصح بالحذر',
+    status_sub:'تواصل قطر استقرارها مع استمرار العمليات اليومية بصورة طبيعية. أوضاع قياسية في قطاعات البنية التحتية والطيران والخدمات الأساسية. المراقبة الإقليمية في مستوى مرتفع. لا تحذيرات أمنية حكومية نشطة. النشاط الدبلوماسي يسير كالمعتاد.',
+    threat_bar_label:'مستوى الوعي الظرفي',
+    threat_factors:'استناداً إلى: الأمن الإقليمي · الموقف الدبلوماسي · البنية التحتية · الإشارات الإعلامية',
+    lvl_secure:'آمن', lvl_calm:'هادئ', lvl_caution:'يُنصح بالحذر', lvl_elevated:'متصاعد', lvl_critical:'حرج',
+    live_feed:'بث مباشر',
+    pill_hia:'✓ مطار HIA يعمل', pill_metro:'✓ المترو يسير', pill_schools:'⚠ التعليم: تعلم عن بُعد حتى 26 مارس',
+    score_label:'سلامة البيانات',
+    // AI Summary
+    ai_badge:'ملخص الوضع بالذكاء الاصطناعي',
+    ai_loading:'جارٍ تحليل البيانات من QNA وIMO وGCO وMOFA والجزيرة وشبه الجزيرة وغلف تايمز والبوابات الحكومية الرسمية…',
+    ai_sources_label:'المصادر:',
+    // Tabs
+    tab_news:'آخر الأخبار', tab_regional:'الإشارات الإقليمية', tab_geo:'الجيوسياسية',
+    // Weather
+    widget_weather:'الطقس — الدوحة', w_desc:'أمطار متفرقة · 83%', w_loc:'الدوحة، قطر · توقيت الخليج (UTC+3)',
+    w_humidity:'الرطوبة', w_wind:'الرياح', w_visibility:'الرؤية', w_feels:'الإحساس',
+    // Aviation sidebar
+    widget_aviation:'الطيران',
+    av_operational:'تشغيل كامل', av_hia_name:'مطار حمد الدولي', av_hia_detail:'جميع الصالات تعمل بشكل طبيعي. لا اضطرابات.',
+    av_normal:'طبيعي', av_qr_name:'الخطوط الجوية القطرية', av_qr_detail:'لا تحذيرات. جميع الخطوط العالمية تعمل بشكل طبيعي.',
+    av_travel_alerts:'→ تحذيرات سفر QR', av_live_flights:'→ رحلات مباشرة في HIA',
+    // Prayer
+    widget_prayer:'مواقيت الصلاة — الدوحة',
+    prayer_fajr:'الفجر', prayer_sunrise:'الشروق', prayer_dhuhr:'الظهر', prayer_asr:'العصر', prayer_maghrib:'المغرب', prayer_isha:'العشاء',
+    prayer_next:'← التالية',
+    // Services
+    widget_services:'الخدمات الأساسية',
+    svc_medical:'مستشفى حمد الطبي', svc_metro:'مترو قطر', svc_taxi:'سيارات كروا', svc_fuel:'محطات الوقود', svc_banks:'QNB / البنوك', svc_qrcs:'هلال قطر – طوارئ',
+    svc_normal:'طبيعي', svc_running:'يسير', svc_available:'متاح', svc_operational:'يعمل', svc_open:'مفتوح', svc_standby:'في الاستعداد',
+    // Reliability
+    widget_reliability:'سلامة البيانات',
+    rel_news:'الأخبار', rel_weather:'الطقس', rel_aviation:'الطيران', rel_prayer:'الصلاة', rel_geo:'المعلومات الجيوسياسية', rel_education:'التعليم',
+    // Aviation section
+    sec_av_airports:'حالة المطار والطيران', sec_routes_title:'خطوط QR الرئيسية — مرجع سريع',
+    tbl_from:'من DOH ←', tbl_dest:'الوجهة', tbl_freq:'التردد اليومي', tbl_status:'الحالة',
+    // Movement section
+    sec_ground:'التنقل البري', sec_work:'العمل والمكاتب',
+    mv_moderate:'تدفق معتدل', mv_est_wait:'وقت الانتظار المتوقع', mv_minutes:'دقائق',
+    mv_into_qatar:'→ دخول قطر', mv_into_saudi:'→ دخول المملكة العربية السعودية',
+    // Section titles
+    sec_embassies:'جهات الاتصال الطارئة للسفارات — الدوحة',
+    sec_sources:'المصادر الإخبارية والرسمية النشطة',
+    // Settings
+    settings_title:'الإعدادات',
+    lang_heading:'لغة الواجهة', lang_scope_note:'يترجم جميع تسميات التنقل ومؤشرات الحالة وعناصر الواجهة. تبقى الأخبار والبيانات الظرفية باللغة الأصلية للمصدر (الإنجليزية).',
+    legal_heading:'القانونية والدعم',
+    pp_title:'سياسة الخصوصية', pp_subtitle:'كيف يتعامل QPulse مع بياناتك',
+    contact_title:'التواصل', disclaimer_title:'إخلاء المسؤولية', disclaimer_body:'غير تابع لحكومة قطر',
+  },
+
+  hi: {
+    // Navigation
+    nav_status:'स्थिति', nav_aviation:'विमानन', nav_movement:'आवागमन',
+    nav_education:'शिक्षा', nav_embassies:'दूतावास', nav_sources:'स्रोत', nav_settings:'सेटिंग्स',
+    // Status band
+    status_label:'स्थितिजन्य जागरूकता · दोहा, क़तर',
+    status_headline:'शांत · सावधानी आवश्यक',
+    status_sub:'क़तर सामान्य दैनिक परिचालन के साथ स्थिर है। बुनियादी ढाँचे, विमानन और आवश्यक सेवाओं में सामान्य स्थितियाँ। क्षेत्रीय निगरानी बढ़ी हुई। कोई सक्रिय सरकारी सुरक्षा अलर्ट नहीं। कूटनीतिक गतिविधि सामान्य रूप से जारी।',
+    threat_bar_label:'स्थितिजन्य जागरूकता स्तर',
+    threat_factors:'आधार: क्षेत्रीय सुरक्षा · कूटनीतिक स्थिति · बुनियादी ढाँचा · मीडिया संकेत',
+    lvl_secure:'सुरक्षित', lvl_calm:'शांत', lvl_caution:'सावधानी आवश्यक', lvl_elevated:'बढ़ा हुआ', lvl_critical:'गंभीर',
+    live_feed:'लाइव फ़ीड',
+    pill_hia:'✓ HIA परिचालन में', pill_metro:'✓ मेट्रो चालू', pill_schools:'⚠ शिक्षा: 26 मार्च तक दूरस्थ',
+    score_label:'डेटा अखंडता',
+    // AI Summary
+    ai_badge:'AI स्थिति सारांश',
+    ai_loading:'QNA, IMO, GCO, MOFA, अल जज़ीरा, द पेनिनसुला, गल्फ टाइम्स और आधिकारिक सरकारी पोर्टलों से डेटा का विश्लेषण हो रहा है…',
+    ai_sources_label:'स्रोत:',
+    // Tabs
+    tab_news:'ताज़ा खबरें', tab_regional:'क्षेत्रीय संकेत', tab_geo:'भूराजनीतिक',
+    // Weather
+    widget_weather:'मौसम — दोहा', w_desc:'छिटपुट बारिश · 83%', w_loc:'दोहा, क़तर · AST (UTC+3)',
+    w_humidity:'आर्द्रता', w_wind:'हवा', w_visibility:'दृश्यता', w_feels:'महसूस',
+    // Aviation sidebar
+    widget_aviation:'विमानन',
+    av_operational:'पूरी तरह चालू', av_hia_name:'हमद अंतर्राष्ट्रीय हवाईअड्डा', av_hia_detail:'सभी टर्मिनल सामान्य। कोई बाधा नहीं।',
+    av_normal:'सामान्य', av_qr_name:'क़तर एयरवेज़', av_qr_detail:'कोई अलर्ट नहीं। सभी वैश्विक मार्ग सामान्य रूप से चल रहे हैं।',
+    av_travel_alerts:'→ QR यात्रा सतर्कता', av_live_flights:'→ HIA पर लाइव उड़ानें',
+    // Prayer
+    widget_prayer:'नमाज़ के वक़्त — दोहा',
+    prayer_fajr:'फ़जर', prayer_sunrise:'सूर्योदय', prayer_dhuhr:'ज़ुहर', prayer_asr:'असर', prayer_maghrib:'मग़रिब', prayer_isha:'इशा',
+    prayer_next:'← अगली',
+    // Services
+    widget_services:'आवश्यक सेवाएं',
+    svc_medical:'हमद मेडिकल', svc_metro:'क़तर मेट्रो', svc_taxi:'करवा टैक्सी', svc_fuel:'ईंधन स्टेशन', svc_banks:'QNB / बैंक', svc_qrcs:'QRCS आपातकाल',
+    svc_normal:'सामान्य', svc_running:'चल रही है', svc_available:'उपलब्ध', svc_operational:'परिचालन में', svc_open:'खुला', svc_standby:'स्टैंडबाय',
+    // Reliability
+    widget_reliability:'डेटा अखंडता',
+    rel_news:'खबरें', rel_weather:'मौसम', rel_aviation:'विमानन', rel_prayer:'नमाज़', rel_geo:'भू-सूचना', rel_education:'शिक्षा',
+    // Aviation section
+    sec_av_airports:'हवाईअड्डा और एयरलाइन स्थिति', sec_routes_title:'QR मुख्य मार्ग — त्वरित संदर्भ',
+    tbl_from:'DOH से →', tbl_dest:'गंतव्य', tbl_freq:'दैनिक आवृत्ति', tbl_status:'स्थिति',
+    // Movement section
+    sec_ground:'जमीनी आवागमन', sec_work:'काम और कार्यालय',
+    mv_moderate:'मध्यम प्रवाह', mv_est_wait:'अनुमानित प्रतीक्षा', mv_minutes:'मिनट',
+    mv_into_qatar:'→ क़तर में प्रवेश', mv_into_saudi:'← सऊदी अरब में प्रवेश',
+    // Section titles
+    sec_embassies:'आपातकालीन दूतावास संपर्क — दोहा',
+    sec_sources:'सक्रिय समाचार और आधिकारिक स्रोत',
+    // Settings
+    settings_title:'सेटिंग्स',
+    lang_heading:'इंटरफ़ेस भाषा', lang_scope_note:'सभी नेविगेशन लेबल, स्थिति संकेतक और UI तत्व अनुवादित होते हैं। समाचार और स्थितिजन्य डेटा अपनी मूल भाषा (अंग्रेज़ी) में रहता है।',
+    legal_heading:'कानूनी और सहायता',
+    pp_title:'गोपनीयता नीति', pp_subtitle:'QPulse आपके डेटा को कैसे संभालता है',
+    contact_title:'संपर्क करें', disclaimer_title:'अस्वीकरण', disclaimer_body:'क़तर सरकार से संबद्ध नहीं',
+  }
+};
+
+// ── T() helper — safe translation lookup ──
+let currentLang = localStorage.getItem('qpulse_lang') || 'en';
+
+function T(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key])
+    || (TRANSLATIONS.en[key])
+    || key;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = T(key);
+    if(val) el.innerHTML = val;
+  });
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('qpulse_lang', lang);
+
+  // Update button active states
+  ['en','ar','hi'].forEach(l => {
+    const btn = document.getElementById('lang-'+l);
+    if(btn) btn.classList.toggle('active', l===lang);
+  });
+
+  // RTL + lang attribute
+  const html = document.documentElement;
+  html.lang = lang;
+  html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  // Arabic font switch: apply Noto Naskh Arabic to body
+  document.body.style.fontFamily = lang === 'ar'
+    ? "'Noto Naskh Arabic', 'Syne', sans-serif"
+    : "'Syne', sans-serif";
+
+  // Apply all static string swaps
+  applyTranslations();
+
+  // Re-render dynamic components that use translated strings
+  renderPrayers();
 }
 
 function switchTab(id, btn) {
@@ -1244,6 +1721,10 @@ async function loadAISummary() {
 // ════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Apply saved language preference before first render
+  if(currentLang !== 'en') setLanguage(currentLang);
+  else applyTranslations(); // ensure defaults render
+
   renderNewsItems(NEWS_ITEMS,'news-feed');
   renderNewsItems(REGIONAL_ITEMS,'regional-feed');
   renderGeoItems(GEO_ITEMS);
