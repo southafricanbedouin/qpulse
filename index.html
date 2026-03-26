@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Qatar Pulse v3.02 — Live Situational Awareness</title>
+<title>Qatar Pulse v3.03 — Live Situational Awareness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -524,6 +524,77 @@
   .settings-meta { font-size:11px; color:var(--text3); margin-top:16px; font-family:'JetBrains Mono',monospace; }
 
   /* ══════════════════════════════════
+     WEATHER ALERT BANNER
+  ══════════════════════════════════ */
+  .weather-alert-banner {
+    display: none;
+    padding: 0 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative; z-index: 99;
+  }
+  .weather-alert-banner.caution { background: linear-gradient(135deg, #7a4a00, #C17A1A); }
+  .weather-alert-banner.warning { background: linear-gradient(135deg, #6a2000, #D4521A); }
+  .weather-alert-banner.severe  { background: linear-gradient(135deg, #4a0000, #B71C1C); }
+  .weather-alert-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 0;
+  }
+  .weather-alert-icon { font-size: 22px; flex-shrink: 0; }
+  .weather-alert-content { flex: 1; }
+  .weather-alert-title {
+    font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); margin-bottom: 2px;
+  }
+  .weather-alert-body { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.4; }
+  .weather-alert-meta { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+  .weather-alert-close {
+    width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #fff; cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+    border: none; font-family: 'Syne', sans-serif;
+  }
+  .weather-alert-close:hover { background: rgba(255,255,255,0.3); }
+
+  /* ── LIVE BADGE ── */
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 8px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+    background: rgba(46,125,82,0.12); color: var(--green);
+    border: 1px solid rgba(46,125,82,0.25); border-radius: 8px;
+    padding: 2px 6px; vertical-align: middle; margin-left: 4px;
+  }
+  .live-badge::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--green); animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .static-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    background: rgba(200,169,110,0.08); color: var(--accent);
+    border: 1px solid rgba(200,169,110,0.2); border-radius: 8px;
+    padding: 2px 6px; vertical-align: middle; margin-left: 4px;
+  }
+
+  /* ── NEWS LOADING ── */
+  .news-skeleton {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .skel-line {
+    background: linear-gradient(90deg, var(--bg3) 25%, var(--border) 50%, var(--bg3) 75%);
+    background-size: 200% 100%; animation: shimmer 1.5s infinite;
+    border-radius: 4px; height: 10px; margin-bottom: 8px;
+  }
+  .skel-line.w80 { width: 80%; }
+  .skel-line.w60 { width: 60%; }
+  .skel-line.w40 { width: 40%; }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ── NEWS SOURCE STATUS DOT ── */
+  .source-dot.live { background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+
+  /* ══════════════════════════════════
      RTL OVERRIDES (Arabic)
   ══════════════════════════════════ */
   [dir="rtl"] .header-inner { flex-direction: row-reverse; }
@@ -640,7 +711,7 @@
     <a class="logo" href="#">
       <div class="logo-flag"><div class="m"></div><div class="w"></div></div>
       <div class="logo-text">Qatar <span>Pulse</span></div>
-      <span class="version-pill">v3.02</span>
+      <span class="version-pill">v3.03</span>
     </a>
     <nav>
       <a href="#" class="active" onclick="showSection('status',this);return false" data-i18n="nav_status">Status</a>
@@ -669,6 +740,21 @@
   <div class="dua-item">
     <span class="dua-arabic">رَبِّ اجۡعَلۡ هَٰذَا بَلَدًا ءَامِنًا</span>
     <span class="dua-translation">My Lord, make this a city of peace — Ibrahim 14:35</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     WEATHER ALERT BANNER
+══════════════════════════ -->
+<div class="weather-alert-banner" id="weather-alert-banner">
+  <div class="weather-alert-inner">
+    <div class="weather-alert-icon" id="alert-icon">⛈️</div>
+    <div class="weather-alert-content">
+      <div class="weather-alert-title" data-i18n="alert_title">⚠ Weather Alert — Doha</div>
+      <div class="weather-alert-body" id="alert-body">Severe weather conditions in Doha — exercise caution outdoors</div>
+      <div class="weather-alert-meta" id="alert-meta">Live · Open-Meteo · Updated just now</div>
+    </div>
+    <button class="weather-alert-close" onclick="document.getElementById('weather-alert-banner').style.display='none'" aria-label="Dismiss">×</button>
   </div>
 </div>
 
@@ -776,7 +862,7 @@
       <button class="tab" onclick="switchTab('regional',this)" data-i18n="tab_regional">Regional Signals</button>
       <button class="tab" onclick="switchTab('geo',this)" data-i18n="tab_geo">Geopolitical</button>
     </div>
-    <div class="tab-panel active" id="tab-news"><div id="news-feed"></div></div>
+    <div class="tab-panel active" id="tab-news"><div id="news-feed"><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div></div></div>
     <div class="tab-panel" id="tab-regional"><div id="regional-feed"></div></div>
     <div class="tab-panel" id="tab-geo"><div id="geo-feed"></div></div>
   </div>
@@ -784,7 +870,7 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="widget fade-in">
-      <div class="widget-head"><span data-i18n="widget_weather">Weather — Doha</span> <span style="font-family:'JetBrains Mono',monospace;font-size:10px" id="weather-time">—</span></div>
+      <div class="widget-head"><span data-i18n="widget_weather">Weather — Doha</span><span class="live-badge">Live</span> <span style="font-family:'JetBrains Mono',monospace;font-size:10px" id="weather-time">—</span></div>
       <div class="weather-widget">
         <div class="weather-main">
           <div class="weather-temp">27°</div>
@@ -825,7 +911,7 @@
     </div>
 
     <div class="widget fade-in-delay">
-      <div class="widget-head" data-i18n="widget_prayer">Prayer Times — Doha</div>
+      <div class="widget-head"><span data-i18n="widget_prayer">Prayer Times — Doha</span><span class="live-badge">Live</span></div>
       <div class="prayer-list" id="prayer-list"></div>
     </div>
 
@@ -1050,7 +1136,11 @@
      SOURCES SECTION
 ══════════════════════════ -->
 <div id="sources-section" style="display:none;max-width:1100px;margin:0 auto;padding:28px 24px 80px;position:relative;z-index:1">
-  <div style="margin-bottom:16px"><div class="section-title" data-i18n="sec_sources">Active News &amp; Official Sources</div></div>
+  <div style="margin-bottom:12px"><div class="section-title" data-i18n="sec_sources">Active News &amp; Official Sources</div></div>
+  <div style="margin-bottom:16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text2)">
+    <span><span class="live-badge">Live</span> Media sources pulled via RSS — refreshes every 15 min</span>
+    <span><span class="static-badge">Verified</span> Official gov portals — curated links, no public API available</span>
+  </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px" id="sources-grid"></div>
 </div>
 
@@ -1116,7 +1206,7 @@
           <div class="legal-link" style="cursor:default">
             <span class="legal-icon">ℹ️</span>
             <div>
-              <div style="font-weight:700;font-size:13px">QPulse v3.02</div>
+              <div style="font-weight:700;font-size:13px">QPulse v3.03</div>
               <div style="font-size:11px;color:var(--text3)">by Muhammad Seedat · March 2026</div>
             </div>
           </div>
@@ -1154,7 +1244,7 @@
               <div class="pp-section-body">For questions, feedback, or requests related to this Privacy Policy or QPulse generally, please contact: <a href="mailto:seedat.muhammad@gmail.com">seedat.muhammad@gmail.com</a><br><br>Built by <strong>Muhammad Seedat</strong> · <a href="https://www.linkedin.com/in/seedatmuhammad" target="_blank">LinkedIn</a> · <a href="https://x.com/safricanbedouin" target="_blank">X @safricanbedouin</a> · <a href="https://www.instagram.com/southafricanbedouin" target="_blank">Instagram</a></div>
             </div>
           </div>
-          <div class="settings-meta">Last updated: 24 March 2026 · QPulse v3.02</div>
+          <div class="settings-meta">Last updated: 24 March 2026 · QPulse v3.03</div>
         </div>
       </div>
     </div>
@@ -1231,12 +1321,46 @@
         Not affiliated with the Government of Qatar ·
         This tool is designed to support daily planning — not to assess or comment on Qatar's security posture.
       </div>
-      <div class="footer-version">v3.02 · QPulse by mseedat</div>
+      <div class="footer-version">v3.03 · QPulse by mseedat</div>
     </div>
   </div>
 </footer>
 
 <script>
+// ════════════════════════════════════
+// WMO WEATHER CODES (Open-Meteo)
+// ════════════════════════════════════
+const WMO = {
+  0:  {d:'Clear sky',              i:'☀️',  a:null},
+  1:  {d:'Mainly clear',           i:'🌤️', a:null},
+  2:  {d:'Partly cloudy',          i:'⛅',  a:null},
+  3:  {d:'Overcast',               i:'☁️',  a:null},
+  45: {d:'Foggy',                  i:'🌫️', a:'caution'},
+  48: {d:'Icy fog',                i:'🌫️', a:'caution'},
+  51: {d:'Light drizzle',          i:'🌦️', a:'caution'},
+  53: {d:'Moderate drizzle',       i:'🌧️', a:'caution'},
+  55: {d:'Dense drizzle',          i:'🌧️', a:'warning'},
+  61: {d:'Light rain',             i:'🌧️', a:'caution'},
+  63: {d:'Moderate rain',          i:'🌧️', a:'warning'},
+  65: {d:'Heavy rain',             i:'⛈️', a:'severe'},
+  71: {d:'Light snow',             i:'🌨️', a:'caution'},
+  73: {d:'Moderate snow',          i:'🌨️', a:'warning'},
+  75: {d:'Heavy snow',             i:'❄️',  a:'severe'},
+  80: {d:'Light showers',          i:'🌦️', a:'caution'},
+  81: {d:'Moderate showers',       i:'🌧️', a:'warning'},
+  82: {d:'Violent showers',        i:'⛈️', a:'severe'},
+  85: {d:'Snow showers',           i:'🌨️', a:'warning'},
+  95: {d:'Thunderstorm',           i:'⛈️', a:'severe'},
+  96: {d:'Thunderstorm + hail',    i:'⛈️', a:'severe'},
+  99: {d:'Heavy thunderstorm',     i:'⛈️', a:'severe'},
+};
+
+const ALERT_MESSAGES = {
+  caution: 'Unusual weather in Doha — light precipitation expected. Exercise care on roads.',
+  warning:  'Adverse weather conditions in Doha — avoid unnecessary travel. Roads may flood.',
+  severe:   'Severe weather in Doha — stay indoors where possible. Roads may be hazardous.',
+};
+
 // ════════════════════════════════════
 // DATA
 // ════════════════════════════════════
@@ -1330,7 +1454,8 @@ const GEO_ITEMS = [
   { level:"green",  title:"Iran Airspace",                detail:"Qatar Airways routes via Iranian airspace operating normally. No NOTAM restrictions.",                source:"HIA / ICAO" },
 ];
 
-const PRAYER_TIMES = [
+// Mutable — overwritten by Aladhan API
+let PRAYER_TIMES = [
   { name:"Fajr",    time:"04:38" },
   { name:"Sunrise", time:"05:52" },
   { name:"Dhuhr",   time:"11:52" },
@@ -1400,17 +1525,23 @@ function renderEmbassies() {
 }
 
 function renderSources() {
-  document.getElementById('sources-grid').innerHTML = SOURCES.map(s => `
+  document.getElementById('sources-grid').innerHTML = SOURCES.map(s => {
+    const isLive = s.dot !== 'official';
+    const badge = isLive
+      ? `<span class="live-badge" style="margin-left:0">RSS</span>`
+      : `<span class="static-badge" style="margin-left:0">Gov</span>`;
+    return `
     <a href="${s.url}" target="_blank" style="text-decoration:none">
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;transition:all 0.15s;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer" onmouseover="this.style.borderColor='var(--maroon)'" onmouseout="this.style.borderColor='var(--border)'">
         <div class="source-dot ${s.dot}" style="width:8px;height:8px;flex-shrink:0"></div>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:600;color:var(--text)">${s.name}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">${s.type}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:6px">${badge} ${s.type}</div>
         </div>
         <div style="font-size:12px;color:var(--text3)">↗</div>
       </div>
-    </a>`).join('');
+    </a>`;
+  }).join('');
 }
 
 function renderFlightTable() {
@@ -1423,6 +1554,179 @@ function renderFlightTable() {
       <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${r.freq}</td>
       <td><span class="flight-status-badge fstatus-${r.status}">${r.label}</span></td>
     </tr>`).join('');
+}
+
+// ════════════════════════════════════
+// LIVE: WEATHER — Open-Meteo (free, no key, CORS OK)
+// ════════════════════════════════════
+
+async function loadLiveWeather() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=25.2854&longitude=51.5310' +
+      '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation,apparent_temperature,visibility' +
+      '&timezone=Asia%2FQatar&wind_speed_unit=kmh';
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('weather fetch failed');
+    const d = await r.json();
+    const c = d.current;
+    const wmo = WMO[c.weather_code] || {d:'Unknown', i:'🌡️', a:null};
+
+    // Update weather widget
+    const tempEl = document.querySelector('.weather-temp');
+    if (tempEl) tempEl.textContent = Math.round(c.temperature_2m) + '°';
+
+    const descEl = document.querySelector('.weather-desc');
+    if (descEl) descEl.textContent = wmo.i + ' ' + wmo.d + (c.precipitation > 0 ? ' · ' + c.precipitation + 'mm' : '');
+
+    // Update stat values
+    const stats = document.querySelectorAll('.weather-stat-val');
+    if (stats[0]) stats[0].textContent = c.relative_humidity_2m + '%';
+    if (stats[1]) stats[1].textContent = Math.round(c.wind_speed_10m) + ' km/h';
+    if (stats[2]) stats[2].textContent = c.visibility ? (c.visibility / 1000).toFixed(1) + ' km' : '—';
+    if (stats[3]) stats[3].textContent = Math.round(c.apparent_temperature) + '°';
+
+    // Show weather alert if conditions warrant
+    if (wmo.a) {
+      const banner = document.getElementById('weather-alert-banner');
+      const alertBody = document.getElementById('alert-body');
+      const alertMeta = document.getElementById('alert-meta');
+      const alertIcon = document.getElementById('alert-icon');
+      if (banner) {
+        banner.className = 'weather-alert-banner ' + wmo.a;
+        banner.style.display = 'block';
+        if (alertIcon) alertIcon.textContent = wmo.i;
+        if (alertBody) alertBody.textContent =
+          wmo.d + ' · ' + Math.round(c.temperature_2m) + '°C · ' + ALERT_MESSAGES[wmo.a];
+        if (alertMeta) {
+          const now = new Date();
+          alertMeta.textContent = 'Live · Open-Meteo · Updated ' +
+            now.toLocaleTimeString('en-US',{timeZone:'Asia/Qatar',hour:'2-digit',minute:'2-digit'}) + ' AST';
+        }
+      }
+    }
+  } catch(e) {
+    console.warn('Weather API unavailable — using cached data');
+  }
+}
+
+// ════════════════════════════════════
+// LIVE: PRAYER TIMES — Aladhan (free, no key, CORS OK)
+// ════════════════════════════════════
+
+async function loadLivePrayers() {
+  try {
+    const r = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Doha&country=QA&method=3');
+    if (!r.ok) throw new Error('prayer fetch failed');
+    const d = await r.json();
+    if (d.code === 200 && d.data && d.data.timings) {
+      const t = d.data.timings;
+      PRAYER_TIMES = [
+        { name:'Fajr',    time: t.Fajr.substring(0,5) },
+        { name:'Sunrise', time: t.Sunrise.substring(0,5) },
+        { name:'Dhuhr',   time: t.Dhuhr.substring(0,5) },
+        { name:'Asr',     time: t.Asr.substring(0,5) },
+        { name:'Maghrib', time: t.Maghrib.substring(0,5) },
+        { name:'Isha',    time: t.Isha.substring(0,5) },
+      ];
+      renderPrayers();
+    }
+  } catch(e) {
+    console.warn('Prayer API unavailable — using cached times');
+  }
+}
+
+// ════════════════════════════════════
+// LIVE: NEWS — RSS feeds via rss2json (free tier, ~30min cache)
+// Honest: official gov (QNA/IMO/GCO) have no public CORS API;
+//         shown as curated+verified cards with direct links.
+// ════════════════════════════════════
+
+const RSS_FEEDS = [
+  { url:'https://www.aljazeera.com/xml/rss/all.xml',                    source:'Al Jazeera',      dot:'media', type:'National Media'  },
+  { url:'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',      source:'BBC Middle East',  dot:'intl',  type:'International'   },
+  { url:'https://www.gulf-times.com/rss/',                              source:'Gulf Times',       dot:'media', type:'National Media'  },
+  { url:'https://thepeninsulaqatar.com/rss',                            source:'The Peninsula',    dot:'media', type:'National Media'  },
+];
+
+const GULF_KEYWORDS = ['qatar','doha','gulf','gcc','saudi','arab','iran','hamas','gaza',
+  'middle east','qatar airways','hia','qna','imo','moe','region'];
+
+function newsRelevance(item) {
+  const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+  return GULF_KEYWORDS.filter(k => text.includes(k)).length;
+}
+
+function relativeTime(dateStr) {
+  if (!dateStr) return 'Recently';
+  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+  if (diff < 60)   return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+async function loadLiveNews() {
+  const proxy = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
+  const results = await Promise.allSettled(
+    RSS_FEEDS.map(f =>
+      fetch(proxy + encodeURIComponent(f.url))
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(d => ({ ...f, items: (d.items || []).map(i => ({...i, _feed: f})) }))
+    )
+  );
+
+  // Merge all items
+  let allItems = [];
+  results.forEach(r => {
+    if (r.status === 'fulfilled' && r.value.items) {
+      allItems = allItems.concat(r.value.items);
+    }
+  });
+
+  if (allItems.length === 0) {
+    // All feeds failed — keep static fallback already rendered
+    console.warn('All RSS feeds unavailable — using cached news');
+    renderNewsItems(NEWS_ITEMS, 'news-feed');
+    renderNewsItems(REGIONAL_ITEMS, 'regional-feed');
+    return;
+  }
+
+  // Sort by relevance then recency
+  allItems.sort((a, b) => {
+    const relDiff = newsRelevance(b) - newsRelevance(a);
+    if (relDiff !== 0) return relDiff;
+    return new Date(b.pubDate || 0) - new Date(a.pubDate || 0);
+  });
+
+  // Deduplicate by title similarity
+  const seen = new Set();
+  const unique = allItems.filter(i => {
+    const key = (i.title || '').substring(0, 40).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Map to QPulse news item format
+  const liveItems = unique.slice(0, 10).map(i => ({
+    source: i._feed.source,
+    dot:    'live',
+    time:   relativeTime(i.pubDate),
+    title:  i.title || 'Untitled',
+    url:    i.link  || i._feed.url,
+  }));
+
+  renderNewsItems(liveItems, 'news-feed');
+
+  // Regional tab: re-render with Gulf-filtered items
+  const regionalItems = unique
+    .filter(i => newsRelevance(i) >= 2)
+    .slice(0, 6)
+    .map(i => ({
+      source: i._feed.source, dot: 'live',
+      time: relativeTime(i.pubDate), title: i.title || 'Untitled', url: i.link || i._feed.url,
+    }));
+  if (regionalItems.length > 0) renderNewsItems(regionalItems, 'regional-feed');
 }
 
 // ════════════════════════════════════
@@ -1723,9 +2027,10 @@ async function loadAISummary() {
 document.addEventListener('DOMContentLoaded', () => {
   // Apply saved language preference before first render
   if(currentLang !== 'en') setLanguage(currentLang);
-  else applyTranslations(); // ensure defaults render
+  else applyTranslations();
 
-  renderNewsItems(NEWS_ITEMS,'news-feed');
+  // Static renders (instant)
+  renderNewsItems(NEWS_ITEMS,'news-feed'); // placeholder until live loads
   renderNewsItems(REGIONAL_ITEMS,'regional-feed');
   renderGeoItems(GEO_ITEMS);
   renderPrayers();
@@ -1733,8 +2038,18 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSources();
   renderFlightTable();
   updateClock();
+
+  // Live API calls (async, non-blocking)
+  loadLiveWeather();      // Open-Meteo — weather + alert banner
+  loadLivePrayers();      // Aladhan — today's accurate prayer times
+  loadLiveNews();         // RSS2JSON — Al Jazeera, BBC ME, Gulf Times, The Peninsula
+
+  // Refresh intervals
   setInterval(updateClock, 30000);
   setInterval(renderPrayers, 60000);
+  setInterval(loadLiveWeather, 10 * 60 * 1000);  // refresh weather every 10 min
+  setInterval(loadLiveNews,    15 * 60 * 1000);   // refresh news every 15 min
+
   loadAISummary();
 });
 </script>
