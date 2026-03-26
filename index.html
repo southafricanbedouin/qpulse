@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <style>
   :root {
     /* ── Pantone 222 C — Official Qatar Maroon ── */
@@ -940,6 +941,25 @@
         <div class="reliability-item"><div class="rel-dot" style="background:var(--green)"></div><div class="rel-label" data-i18n="rel_education">Education</div><div class="rel-check" style="color:var(--green)">✓</div></div>
       </div>
     </div>
+
+    <!-- MOI Qatar 𝕏 Live Feed -->
+    <div class="widget fade-in-delay2" style="overflow:hidden;padding:0">
+      <div class="widget-head" style="padding:12px 14px;border-radius:12px 12px 0 0">
+        <span>MOI Qatar · Official Updates</span>
+        <span class="live-badge" style="font-size:9px">𝕏 Live</span>
+      </div>
+      <div style="border-radius:0 0 12px 12px;overflow:hidden;background:var(--bg2)">
+        <a class="twitter-timeline"
+           data-height="400"
+           data-theme="light"
+           data-chrome="noheader nofooter noborders transparent"
+           data-tweet-limit="5"
+           href="https://twitter.com/MOI_QatarEn?ref_src=twsrc%5Etfw">Tweets by MOI_QatarEn</a>
+      </div>
+      <div style="padding:6px 14px 10px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">
+        Source: <a href="https://x.com/MOI_QatarEn" target="_blank" style="color:var(--maroon)">@MOI_QatarEn</a> · Ministry of Interior Qatar
+      </div>
+    </div>
   </aside>
 </main>
 
@@ -1676,20 +1696,16 @@ async function loadLivePrayers() {
 }
 
 // ════════════════════════════════════
-// LIVE: NEWS v3.04 — Dual-proxy RSS engine
-// Primary:  allorigins.win  → direct XML parse, no rss2json cache layer
-// Fallback: rss2json.com    → reliable but ~30min cached
-// Filters to 48-hour window; sorted by recency.
+// LIVE: NEWS v3.04 — rss2json CORS proxy (proven reliable)
+// Fetches 20 items per feed, filters to 48h window, sorts by recency.
 // All three tabs (Latest / Regional / Geopolitical) populated live.
 // ════════════════════════════════════
 
 const RSS_FEEDS = [
-  { url:'https://www.aljazeera.com/xml/rss/all.xml',               source:'Al Jazeera',      dot:'media',    type:'National Media'  },
-  { url:'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml', source:'BBC Middle East', dot:'intl',     type:'International'   },
-  { url:'https://www.gulf-times.com/rss/',                          source:'Gulf Times',      dot:'media',    type:'National Media'  },
-  { url:'https://thepeninsulaqatar.com/rss',                        source:'The Peninsula',   dot:'media',    type:'National Media'  },
-  { url:'https://www.arabnews.com/rss.xml',                         source:'Arab News',       dot:'media',    type:'Gulf Media'      },
-  { url:'https://feeds.reuters.com/reuters/worldNews',              source:'Reuters World',   dot:'intl',     type:'International'   },
+  { url:'https://www.aljazeera.com/xml/rss/all.xml',               source:'Al Jazeera',      dot:'media', type:'National Media'  },
+  { url:'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml', source:'BBC Middle East', dot:'intl',  type:'International'   },
+  { url:'https://www.gulf-times.com/rss/',                          source:'Gulf Times',      dot:'media', type:'National Media'  },
+  { url:'https://thepeninsulaqatar.com/rss',                        source:'The Peninsula',   dot:'media', type:'National Media'  },
 ];
 
 // MOI Qatar: no public RSS/API — try Nitter RSS proxy (best-effort; instance availability varies)
@@ -1728,54 +1744,7 @@ function relativeTime(dateStr) {
   return Math.floor(diff/86400) + 'd ago';
 }
 
-// Abort-safe fetch with timeout
-async function _timedFetch(url, ms) {
-  const ctrl = new AbortController();
-  const id = setTimeout(() => ctrl.abort(), ms);
-  try { const r = await fetch(url, { signal: ctrl.signal }); clearTimeout(id); return r; }
-  catch(e) { clearTimeout(id); throw e; }
-}
-
-// Primary: fetch raw XML via allorigins.win (bypasses rss2json cache entirely)
-async function fetchFeedDirect(feed) {
-  const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed.url);
-  const r = await _timedFetch(proxy, 8000);
-  if (!r.ok) throw new Error('allorigins error');
-  const data = await r.json();
-  if (!data.contents) throw new Error('no xml content');
-  const doc = new DOMParser().parseFromString(data.contents, 'text/xml');
-  if (doc.querySelector('parsererror')) throw new Error('xml parse error');
-  return [...doc.querySelectorAll('item')].slice(0, 20).map(el => {
-    const g = tag => {
-      const node = el.querySelector(tag);
-      return node ? (node.textContent || node.getAttribute('url') || '').trim() : '';
-    };
-    return {
-      title:       g('title').replace(/<!\[CDATA\[|\]\]>/g, '').trim(),
-      link:        g('link') || g('guid'),
-      pubDate:     g('pubDate'),
-      description: g('description').replace(/<[^>]+>/g, '').trim(),
-      _feed:       feed,
-    };
-  });
-}
-
-// Fallback: rss2json proxy (reliable, ~30min cached)
-async function fetchFeedProxy(feed) {
-  const url = 'https://api.rss2json.com/v1/api.json?count=20&rss_url=' + encodeURIComponent(feed.url);
-  const r = await _timedFetch(url, 8000);
-  if (!r.ok) throw new Error('rss2json error');
-  const d = await r.json();
-  return (d.items || []).slice(0, 20).map(i => ({ ...i, _feed: feed }));
-}
-
-// Try direct first, fall back to proxy
-async function fetchFeed(feed) {
-  try { return await fetchFeedDirect(feed); }
-  catch(e) { return await fetchFeedProxy(feed); }
-}
-
-// Normalise any item to QPulse news card format
+// Normalise any rss2json item to QPulse news card format
 function toNewsItem(i) {
   return {
     source: i._feed.source,
@@ -1787,18 +1756,29 @@ function toNewsItem(i) {
 }
 
 async function loadLiveNews() {
+  const proxy  = 'https://api.rss2json.com/v1/api.json?count=20&rss_url=';
   const cutoff = Date.now() - 48 * 60 * 60 * 1000; // 48-hour window
 
-  // Fetch all feeds concurrently
-  const results = await Promise.allSettled(RSS_FEEDS.map(fetchFeed));
+  // Fetch all 4 feeds concurrently via rss2json (proven reliable CORS proxy)
+  const results = await Promise.allSettled(
+    RSS_FEEDS.map(f =>
+      fetch(proxy + encodeURIComponent(f.url))
+        .then(r => r.ok ? r.json() : Promise.reject('http'))
+        .then(d => (d.items || []).map(i => ({ ...i, _feed: f })))
+    )
+  );
   let allItems = [];
   results.forEach(r => { if (r.status === 'fulfilled') allItems = allItems.concat(r.value); });
 
   // Best-effort: MOI Qatar via Nitter RSS (silently skipped if unavailable)
   try {
-    const moiItems = await fetchFeedProxy(MOI_NITTER);
-    if (moiItems.length > 0) allItems = allItems.concat(moiItems);
-  } catch(e) { /* Nitter unavailable — normal, skip */ }
+    const r = await fetch(proxy + encodeURIComponent(MOI_NITTER.url));
+    if (r.ok) {
+      const d = await r.json();
+      if (d.items && d.items.length > 0)
+        allItems = allItems.concat(d.items.map(i => ({ ...i, _feed: MOI_NITTER })));
+    }
+  } catch(e) { /* Nitter unavailable — skip */ }
 
   // Fallback to static placeholders if every single feed failed
   if (allItems.length === 0) {
@@ -2159,7 +2139,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Live API calls (async, non-blocking)
   loadLiveWeather();      // Open-Meteo — weather + alert banner
   loadLivePrayers();      // Aladhan — today's accurate prayer times
-  loadLiveNews();         // Dual-proxy — allorigins (direct) + rss2json fallback, 48h window, all 3 tabs
+  loadLiveNews();         // rss2json — 4 feeds, 48h window, all 3 tabs live
 
   // Refresh intervals
   setInterval(updateClock, 30000);
