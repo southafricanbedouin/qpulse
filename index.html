@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Qatar Pulse v3.03 — Live Situational Awareness</title>
+<title>Qatar Pulse v3.04 — Live Situational Awareness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -711,7 +711,7 @@
     <a class="logo" href="#">
       <div class="logo-flag"><div class="m"></div><div class="w"></div></div>
       <div class="logo-text">Qatar <span>Pulse</span></div>
-      <span class="version-pill">v3.03</span>
+      <span class="version-pill">v3.04</span>
     </a>
     <nav>
       <a href="#" class="active" onclick="showSection('status',this);return false" data-i18n="nav_status">Status</a>
@@ -862,6 +862,7 @@
       <button class="tab" onclick="switchTab('regional',this)" data-i18n="tab_regional">Regional Signals</button>
       <button class="tab" onclick="switchTab('geo',this)" data-i18n="tab_geo">Geopolitical</button>
     </div>
+    <div id="news-fetch-time" style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;padding:2px 0 10px;opacity:0.75;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0"></span>Fetching live feeds…</div>
     <div class="tab-panel active" id="tab-news"><div id="news-feed"><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div><div class="news-skeleton"><div class="skel-line w40"></div><div class="skel-line w80"></div><div class="skel-line w60"></div></div></div></div>
     <div class="tab-panel" id="tab-regional"><div id="regional-feed"></div></div>
     <div class="tab-panel" id="tab-geo"><div id="geo-feed"></div></div>
@@ -1377,6 +1378,7 @@ const SOURCES = [
   { name:"Qatar Airways — Flight Schedule",  url:"https://www.qatarairways.com/en/rebooking-options.html#flightschedule",                  type:"Official Airline",           dot:"official" },
   { name:"Hukoomi Gov Portal",               url:"https://portal.www.gov.qa",                                                              type:"Official Gov",               dot:"official" },
   { name:"MOI Qatar",                        url:"https://www.moi.gov.qa",                                                                 type:"Official Gov",               dot:"official" },
+  { name:"MOI Qatar 𝕏 (@MOI_QatarEn)",      url:"https://x.com/MOI_QatarEn",                                                              type:"Official Gov · Live Updates", dot:"official" },
   { name:"QRCS Red Crescent",                url:"https://www.qrcs.org.qa",                                                                type:"Official Humanitarian",      dot:"official" },
   // ── National Media ──
   { name:"Marhaba Qatar",                    url:"https://marhaba.qa",                                                                     type:"Expat Resource",             dot:"media" },
@@ -1385,6 +1387,7 @@ const SOURCES = [
   { name:"Gulf Times",                       url:"https://www.gulf-times.com",                                                             type:"National Media",             dot:"media" },
   { name:"Qatar Tribune",                    url:"https://www.qatartribune.com",                                                           type:"National Media",             dot:"media" },
   { name:"Doha News",                        url:"https://dohanews.co",                                                                    type:"Independent",                dot:"media" },
+  { name:"Arab News",                        url:"https://www.arabnews.com",                                                               type:"Gulf Media",                 dot:"media" },
   // ── International ──
   { name:"BBC Middle East",                  url:"https://www.bbc.com/news/world/middle_east",                                             type:"International",              dot:"intl" },
   { name:"Reuters Gulf",                     url:"https://www.reuters.com/world/middle-east/",                                             type:"International",              dot:"intl" },
@@ -1492,6 +1495,43 @@ function renderGeoItems(items) {
           <div style="font-size:10px;color:var(--text3);margin-top:4px;font-family:'JetBrains Mono',monospace">${item.source}</div>
         </div>
       </div>`).join('') + `</div>`;
+}
+
+// Geo tab: curated strategic cards + live geopolitical news feed
+function renderGeoTab(liveGeoNews) {
+  const geoFeed = document.getElementById('geo-feed');
+  if (!geoFeed) return;
+
+  // Static situation assessment cards (always shown — Qatar strategic posture)
+  const staticHTML = `<div class="geo-pulse">` +
+    GEO_ITEMS.map(item => `
+      <div class="geo-item">
+        <div class="geo-indicator ${item.level}"></div>
+        <div class="geo-content">
+          <div class="geo-title">${item.title}</div>
+          <div class="geo-detail">${item.detail}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;font-family:'JetBrains Mono',monospace">${item.source} · Curated</div>
+        </div>
+      </div>`).join('') + `</div>`;
+
+  // Live geopolitical news from RSS feeds
+  const liveHTML = liveGeoNews.length > 0 ? `
+    <div style="margin-top:16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);padding-bottom:10px;display:flex;align-items:center;gap:6px">
+        <span class="live-badge" style="margin:0">Live</span> Geopolitical News Feed
+      </div>
+      ${liveGeoNews.map((item,i) => `
+        <div class="news-item fade-in" style="animation-delay:${i*0.06}s">
+          <div>
+            <div class="news-source"><span class="source-dot ${item.dot}"></span>${item.source}</div>
+            <div class="news-title">${item.title}</div>
+            <div class="news-time">${item.time}</div>
+          </div>
+          <a href="${item.url}" target="_blank" class="share-btn">↗</a>
+        </div>`).join('')}
+    </div>` : '';
+
+  geoFeed.innerHTML = staticHTML + liveHTML;
 }
 
 function renderPrayers() {
@@ -1636,97 +1676,174 @@ async function loadLivePrayers() {
 }
 
 // ════════════════════════════════════
-// LIVE: NEWS — RSS feeds via rss2json (free tier, ~30min cache)
-// Honest: official gov (QNA/IMO/GCO) have no public CORS API;
-//         shown as curated+verified cards with direct links.
+// LIVE: NEWS v3.04 — Dual-proxy RSS engine
+// Primary:  allorigins.win  → direct XML parse, no rss2json cache layer
+// Fallback: rss2json.com    → reliable but ~30min cached
+// Filters to 48-hour window; sorted by recency.
+// All three tabs (Latest / Regional / Geopolitical) populated live.
 // ════════════════════════════════════
 
 const RSS_FEEDS = [
-  { url:'https://www.aljazeera.com/xml/rss/all.xml',                    source:'Al Jazeera',      dot:'media', type:'National Media'  },
-  { url:'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',      source:'BBC Middle East',  dot:'intl',  type:'International'   },
-  { url:'https://www.gulf-times.com/rss/',                              source:'Gulf Times',       dot:'media', type:'National Media'  },
-  { url:'https://thepeninsulaqatar.com/rss',                            source:'The Peninsula',    dot:'media', type:'National Media'  },
+  { url:'https://www.aljazeera.com/xml/rss/all.xml',               source:'Al Jazeera',      dot:'media',    type:'National Media'  },
+  { url:'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml', source:'BBC Middle East', dot:'intl',     type:'International'   },
+  { url:'https://www.gulf-times.com/rss/',                          source:'Gulf Times',      dot:'media',    type:'National Media'  },
+  { url:'https://thepeninsulaqatar.com/rss',                        source:'The Peninsula',   dot:'media',    type:'National Media'  },
+  { url:'https://www.arabnews.com/rss.xml',                         source:'Arab News',       dot:'media',    type:'Gulf Media'      },
+  { url:'https://feeds.reuters.com/reuters/worldNews',              source:'Reuters World',   dot:'intl',     type:'International'   },
 ];
 
-const GULF_KEYWORDS = ['qatar','doha','gulf','gcc','saudi','arab','iran','hamas','gaza',
-  'middle east','qatar airways','hia','qna','imo','moe','region'];
+// MOI Qatar: no public RSS/API — try Nitter RSS proxy (best-effort; instance availability varies)
+const MOI_NITTER = { url:'https://nitter.net/MOI_QatarEn/rss', source:'MOI Qatar', dot:'official', type:'Government' };
 
-function newsRelevance(item) {
-  const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+const GULF_KEYWORDS = [
+  'qatar','doha','gulf','gcc','saudi','uae','emirates','bahrain','kuwait','oman',
+  'iran','hamas','gaza','middle east','qatar airways','hia','qna','imo','moe',
+  'riyadh','abu dhabi','muscat','qatar energy','lusail','pearl qatar','arabian'
+];
+
+const GEO_KEYWORDS = [
+  'ceasefire','diplomacy','diplomatic','united nations','un security','conflict',
+  'military','airstrike','strike','missile','treaty','alliance','nuclear',
+  'iran','hamas','gaza','hezbollah','israel','ukraine','russia','nato','sanctions',
+  'war','hostage','peace talks','foreign minister','state department','pentagon',
+  'al udeid','houthi','red sea','energy security','geopolitical','international'
+];
+
+function gulfRelevance(item) {
+  const text = ((item.title||'') + ' ' + (item.description||'')).toLowerCase();
   return GULF_KEYWORDS.filter(k => text.includes(k)).length;
+}
+
+function geoRelevance(item) {
+  const text = ((item.title||'') + ' ' + (item.description||'')).toLowerCase();
+  return GEO_KEYWORDS.filter(k => text.includes(k)).length;
 }
 
 function relativeTime(dateStr) {
   if (!dateStr) return 'Recently';
   const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
-  if (diff < 60)   return 'Just now';
-  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 60)    return 'Just now';
+  if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
   if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
   return Math.floor(diff/86400) + 'd ago';
 }
 
-async function loadLiveNews() {
-  const proxy = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
-  const results = await Promise.allSettled(
-    RSS_FEEDS.map(f =>
-      fetch(proxy + encodeURIComponent(f.url))
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => ({ ...f, items: (d.items || []).map(i => ({...i, _feed: f})) }))
-    )
-  );
+// Abort-safe fetch with timeout
+async function _timedFetch(url, ms) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  try { const r = await fetch(url, { signal: ctrl.signal }); clearTimeout(id); return r; }
+  catch(e) { clearTimeout(id); throw e; }
+}
 
-  // Merge all items
-  let allItems = [];
-  results.forEach(r => {
-    if (r.status === 'fulfilled' && r.value.items) {
-      allItems = allItems.concat(r.value.items);
-    }
+// Primary: fetch raw XML via allorigins.win (bypasses rss2json cache entirely)
+async function fetchFeedDirect(feed) {
+  const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed.url);
+  const r = await _timedFetch(proxy, 8000);
+  if (!r.ok) throw new Error('allorigins error');
+  const data = await r.json();
+  if (!data.contents) throw new Error('no xml content');
+  const doc = new DOMParser().parseFromString(data.contents, 'text/xml');
+  if (doc.querySelector('parsererror')) throw new Error('xml parse error');
+  return [...doc.querySelectorAll('item')].slice(0, 20).map(el => {
+    const g = tag => {
+      const node = el.querySelector(tag);
+      return node ? (node.textContent || node.getAttribute('url') || '').trim() : '';
+    };
+    return {
+      title:       g('title').replace(/<!\[CDATA\[|\]\]>/g, '').trim(),
+      link:        g('link') || g('guid'),
+      pubDate:     g('pubDate'),
+      description: g('description').replace(/<[^>]+>/g, '').trim(),
+      _feed:       feed,
+    };
   });
+}
 
+// Fallback: rss2json proxy (reliable, ~30min cached)
+async function fetchFeedProxy(feed) {
+  const url = 'https://api.rss2json.com/v1/api.json?count=20&rss_url=' + encodeURIComponent(feed.url);
+  const r = await _timedFetch(url, 8000);
+  if (!r.ok) throw new Error('rss2json error');
+  const d = await r.json();
+  return (d.items || []).slice(0, 20).map(i => ({ ...i, _feed: feed }));
+}
+
+// Try direct first, fall back to proxy
+async function fetchFeed(feed) {
+  try { return await fetchFeedDirect(feed); }
+  catch(e) { return await fetchFeedProxy(feed); }
+}
+
+// Normalise any item to QPulse news card format
+function toNewsItem(i) {
+  return {
+    source: i._feed.source,
+    dot:    'live',
+    time:   relativeTime(i.pubDate),
+    title:  (i.title || 'Untitled').replace(/<!\[CDATA\[|\]\]>|<[^>]+>/g, '').trim() || 'Untitled',
+    url:    i.link || i._feed.url,
+  };
+}
+
+async function loadLiveNews() {
+  const cutoff = Date.now() - 48 * 60 * 60 * 1000; // 48-hour window
+
+  // Fetch all feeds concurrently
+  const results = await Promise.allSettled(RSS_FEEDS.map(fetchFeed));
+  let allItems = [];
+  results.forEach(r => { if (r.status === 'fulfilled') allItems = allItems.concat(r.value); });
+
+  // Best-effort: MOI Qatar via Nitter RSS (silently skipped if unavailable)
+  try {
+    const moiItems = await fetchFeedProxy(MOI_NITTER);
+    if (moiItems.length > 0) allItems = allItems.concat(moiItems);
+  } catch(e) { /* Nitter unavailable — normal, skip */ }
+
+  // Fallback to static placeholders if every single feed failed
   if (allItems.length === 0) {
-    // All feeds failed — keep static fallback already rendered
-    console.warn('All RSS feeds unavailable — using cached news');
     renderNewsItems(NEWS_ITEMS, 'news-feed');
     renderNewsItems(REGIONAL_ITEMS, 'regional-feed');
+    const ft = document.getElementById('news-fetch-time');
+    if (ft) ft.textContent = 'Live feeds unavailable — showing cached data';
     return;
   }
 
-  // Sort by relevance then recency
-  allItems.sort((a, b) => {
-    const relDiff = newsRelevance(b) - newsRelevance(a);
-    if (relDiff !== 0) return relDiff;
-    return new Date(b.pubDate || 0) - new Date(a.pubDate || 0);
-  });
+  // Filter to 48h (items with no pubDate are kept as-is)
+  const fresh = allItems.filter(i => !i.pubDate || new Date(i.pubDate).getTime() > cutoff);
+  const pool  = fresh.length >= 5 ? fresh : allItems; // fallback if too few recent items
 
-  // Deduplicate by title similarity
-  const seen = new Set();
-  const unique = allItems.filter(i => {
-    const key = (i.title || '').substring(0, 40).toLowerCase();
-    if (seen.has(key)) return false;
+  // Sort by recency (most recent first)
+  pool.sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0));
+
+  // Deduplicate by title prefix
+  const seen   = new Set();
+  const unique = pool.filter(i => {
+    const key = (i.title || '').substring(0, 45).toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
   });
 
-  // Map to QPulse news item format
-  const liveItems = unique.slice(0, 10).map(i => ({
-    source: i._feed.source,
-    dot:    'live',
-    time:   relativeTime(i.pubDate),
-    title:  i.title || 'Untitled',
-    url:    i.link  || i._feed.url,
-  }));
+  // ── Latest News: top 10 most recent ──────────────────────────
+  const latestItems = unique.slice(0, 10).map(toNewsItem);
+  if (latestItems.length > 0) renderNewsItems(latestItems, 'news-feed');
 
-  renderNewsItems(liveItems, 'news-feed');
-
-  // Regional tab: re-render with Gulf-filtered items
-  const regionalItems = unique
-    .filter(i => newsRelevance(i) >= 2)
-    .slice(0, 6)
-    .map(i => ({
-      source: i._feed.source, dot: 'live',
-      time: relativeTime(i.pubDate), title: i.title || 'Untitled', url: i.link || i._feed.url,
-    }));
+  // ── Regional Signals: Gulf-relevant, sorted by recency ───────
+  const regionalItems = unique.filter(i => gulfRelevance(i) >= 1).slice(0, 8).map(toNewsItem);
   if (regionalItems.length > 0) renderNewsItems(regionalItems, 'regional-feed');
+  else renderNewsItems(REGIONAL_ITEMS, 'regional-feed');
+
+  // ── Geopolitical: static context cards + live geo news ───────
+  const liveGeo = unique.filter(i => geoRelevance(i) >= 1).slice(0, 6).map(toNewsItem);
+  renderGeoTab(liveGeo);
+
+  // ── Update fetch timestamp ────────────────────────────────────
+  const ft = document.getElementById('news-fetch-time');
+  if (ft) {
+    const time = new Date().toLocaleTimeString('en-US', { timeZone:'Asia/Qatar', hour:'2-digit', minute:'2-digit' });
+    ft.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0"></span> Refreshed ' + time + ' AST · 48h window · ' + unique.length + ' articles';
+  }
 }
 
 // ════════════════════════════════════
@@ -2042,7 +2159,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Live API calls (async, non-blocking)
   loadLiveWeather();      // Open-Meteo — weather + alert banner
   loadLivePrayers();      // Aladhan — today's accurate prayer times
-  loadLiveNews();         // RSS2JSON — Al Jazeera, BBC ME, Gulf Times, The Peninsula
+  loadLiveNews();         // Dual-proxy — allorigins (direct) + rss2json fallback, 48h window, all 3 tabs
 
   // Refresh intervals
   setInterval(updateClock, 30000);
