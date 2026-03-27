@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <style>
   :root {
     /* ── Pantone 222 C — Official Qatar Maroon ── */
@@ -950,11 +949,11 @@
       </div>
       <div style="border-radius:0 0 12px 12px;overflow:hidden;background:var(--bg2)">
         <a class="twitter-timeline"
-           data-height="400"
+           data-height="420"
            data-theme="light"
-           data-chrome="noheader nofooter noborders transparent"
-           data-tweet-limit="5"
+           data-chrome="noheader nofooter noborders"
            href="https://twitter.com/MOI_QatarEn?ref_src=twsrc%5Etfw">Tweets by MOI_QatarEn</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </div>
       <div style="padding:6px 14px 10px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">
         Source: <a href="https://x.com/MOI_QatarEn" target="_blank" style="color:var(--maroon)">@MOI_QatarEn</a> · Ministry of Interior Qatar
@@ -1755,29 +1754,47 @@ function toNewsItem(i) {
   };
 }
 
+// ── Primary: rss2json (count≤10 respects free tier; checks .status)
+async function _fetchRss2json(feed) {
+  const url = 'https://api.rss2json.com/v1/api.json?count=10&rss_url=' + encodeURIComponent(feed.url);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('rss2json-' + r.status);
+  const d = await r.json();
+  if (d.status && d.status !== 'ok') throw new Error('rss2json-err: ' + (d.message || d.status));
+  return (d.items || []).map(i => ({ ...i, _feed: feed }));
+}
+
+// ── Fallback: corsproxy.io → direct XML (independent of rss2json)
+async function _fetchCorsproxy(feed) {
+  const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(feed.url));
+  if (!r.ok) throw new Error('corsproxy-' + r.status);
+  const xml = await r.text();
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  if (doc.querySelector('parsererror')) throw new Error('xml-parse');
+  return [...doc.querySelectorAll('item')].slice(0, 10).map(el => {
+    const g = tag => (el.querySelector(tag)?.textContent || '').replace(/<!\[CDATA\[|\]\]>/g, '').trim();
+    return { title:g('title'), link:g('link')||g('guid'), pubDate:g('pubDate'), description:g('description'), _feed:feed };
+  });
+}
+
+// ── Try rss2json first; fall back to corsproxy.io
+async function _fetchFeed(feed) {
+  try { return await _fetchRss2json(feed); }
+  catch(e) { return await _fetchCorsproxy(feed); }
+}
+
 async function loadLiveNews() {
-  const proxy  = 'https://api.rss2json.com/v1/api.json?count=20&rss_url=';
   const cutoff = Date.now() - 48 * 60 * 60 * 1000; // 48-hour window
 
-  // Fetch all 4 feeds concurrently via rss2json (proven reliable CORS proxy)
-  const results = await Promise.allSettled(
-    RSS_FEEDS.map(f =>
-      fetch(proxy + encodeURIComponent(f.url))
-        .then(r => r.ok ? r.json() : Promise.reject('http'))
-        .then(d => (d.items || []).map(i => ({ ...i, _feed: f })))
-    )
-  );
+  // Fetch all 4 feeds concurrently (rss2json → corsproxy fallback)
+  const results = await Promise.allSettled(RSS_FEEDS.map(_fetchFeed));
   let allItems = [];
   results.forEach(r => { if (r.status === 'fulfilled') allItems = allItems.concat(r.value); });
 
   // Best-effort: MOI Qatar via Nitter RSS (silently skipped if unavailable)
   try {
-    const r = await fetch(proxy + encodeURIComponent(MOI_NITTER.url));
-    if (r.ok) {
-      const d = await r.json();
-      if (d.items && d.items.length > 0)
-        allItems = allItems.concat(d.items.map(i => ({ ...i, _feed: MOI_NITTER })));
-    }
+    const moiItems = await _fetchRss2json(MOI_NITTER);
+    if (moiItems.length > 0) allItems = allItems.concat(moiItems);
   } catch(e) { /* Nitter unavailable — skip */ }
 
   // Fallback to static placeholders if every single feed failed
